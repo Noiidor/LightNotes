@@ -10,11 +10,25 @@ using System.Windows.Forms;
 
 namespace LightNotes
 {
-    public partial class Form1 : Form
+    public partial class NotePrefab : UserControl
     {
-        public Form1()
+
+        public int id;
+
+        public NotePrefab()
         {
             InitializeComponent();
+        }
+        
+
+        private void button_delete_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NotePrefab_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }
