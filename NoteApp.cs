@@ -10,10 +10,15 @@ using System.Windows.Forms;
 
 namespace LightNotes
 {
+
+    
+
     public partial class NoteApp : Form
     {
 
         DataTable table;
+        uint highestId;
+        NotePrefab[] arr;
 
         public NoteApp()
         {
@@ -31,26 +36,48 @@ namespace LightNotes
 
         private void button_add_Click(object sender, EventArgs e)
         {
+            
             if (table.Rows.Count == 0)
             {
-                table.Rows.Add(0, string.Empty, string.Empty);
+                highestId = 0;
+                table.Rows.Add(highestId, string.Empty, string.Empty);
             }
             else
             {
-                uint highestId = Convert.ToUInt32(table.Compute("max([Id])", string.Empty));
-                table.Rows.Add(highestId + 1, string.Empty, string.Empty);
-                button_add.Text = highestId.ToString();
+                highestId = Convert.ToUInt32(table.Compute("max([Id])", string.Empty)) + 1;
+                table.Rows.Add(highestId, string.Empty, string.Empty);
             }
 
             NotePrefab note = new NotePrefab();
-            Controls.Add(note);
-            note.Parent = flowLayoutPanel1;
-            note.Location = Point.Add(flowLayoutPanel1.Location, (Size)new Point(20, 20));
+            flowLayoutPanel1.Controls.Add(note);
+            note.id = highestId;
+            //label1.Text = flowLayoutPanel1.Controls.ToString();
             
-            
+        }
 
-            
-            
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            NotePrefab[] noteArr = new NotePrefab[flowLayoutPanel1.Controls.Count];
+            flowLayoutPanel1.Controls.CopyTo(noteArr, 0);
+            DataRowCollection itemColumns = table.Rows;
+
+            foreach (NotePrefab note in noteArr)
+            {
+                //NotePrefab[] noteArr = new NotePrefab[flowLayoutPanel1.Controls.Count];
+                //flowLayoutPanel1.Controls.CopyTo(noteArr, 0);
+                if (note.forRemoval == true)
+                {
+                    var penis = table.Rows.IndexOf(table.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
+                    table.Rows.RemoveAt(penis);
+
+                    flowLayoutPanel1.Controls.Remove(note);
+                    
+                    label1.Text = penis.ToString();
+                }
+                //arr = noteArr;
+                //dataGridView1.DataSource = noteArr;
+            }
         }
     }
 }

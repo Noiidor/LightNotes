@@ -29,21 +29,10 @@ namespace LightNotes
         /// </summary>
         private void InitializeComponent()
         {
-            this.button_delete = new System.Windows.Forms.Button();
             this.tbox_text = new System.Windows.Forms.TextBox();
             this.tbox_title = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
-            // 
-            // button_delete
-            // 
-            this.button_delete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_delete.Location = new System.Drawing.Point(223, 4);
-            this.button_delete.Name = "button_delete";
-            this.button_delete.Size = new System.Drawing.Size(24, 30);
-            this.button_delete.TabIndex = 2;
-            this.button_delete.Text = "X";
-            this.button_delete.UseVisualStyleBackColor = true;
-            this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
             // 
             // tbox_text
             // 
@@ -64,13 +53,23 @@ namespace LightNotes
             this.tbox_title.TabIndex = 7;
             this.tbox_title.Text = "Title";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(232, 3);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(15, 14);
+            this.checkBox1.TabIndex = 8;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckStateChanged += new System.EventHandler(this.checkBox1_CheckStateChanged);
+            // 
             // NotePrefab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.tbox_title);
             this.Controls.Add(this.tbox_text);
-            this.Controls.Add(this.button_delete);
             this.Name = "NotePrefab";
             this.Size = new System.Drawing.Size(250, 250);
             this.Load += new System.EventHandler(this.NotePrefab_Load);
@@ -80,8 +79,8 @@ namespace LightNotes
         }
 
         #endregion
-        private System.Windows.Forms.Button button_delete;
         private System.Windows.Forms.TextBox tbox_text;
         private System.Windows.Forms.TextBox tbox_title;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

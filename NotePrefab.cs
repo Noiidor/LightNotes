@@ -12,23 +12,23 @@ namespace LightNotes
 {
     public partial class NotePrefab : UserControl
     {
-
-        public int id;
+        public uint id;
+        public bool forRemoval = false;
 
         public NotePrefab()
         {
             InitializeComponent();
         }
-        
 
-        private void button_delete_Click(object sender, EventArgs e)
+        private void NotePrefab_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void NotePrefab_Load(object sender, EventArgs e)
+        private void checkBox1_CheckStateChanged(object sender, EventArgs e)
         {
-            
+            forRemoval = checkBox1.Checked;
+            tbox_title.Text = forRemoval.ToString();
         }
     }
 }
