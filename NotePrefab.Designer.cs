@@ -43,6 +43,7 @@ namespace LightNotes
             this.tbox_text.Size = new System.Drawing.Size(244, 207);
             this.tbox_text.TabIndex = 5;
             this.tbox_text.Text = "Text";
+            this.tbox_text.TextChanged += new System.EventHandler(this.tbox_text_TextChanged);
             // 
             // tbox_title
             // 
@@ -52,6 +53,7 @@ namespace LightNotes
             this.tbox_title.Size = new System.Drawing.Size(213, 30);
             this.tbox_title.TabIndex = 7;
             this.tbox_title.Text = "Title";
+            this.tbox_title.TextChanged += new System.EventHandler(this.tbox_title_TextChanged);
             // 
             // checkBox1
             // 
