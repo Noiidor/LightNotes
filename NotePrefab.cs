@@ -14,8 +14,8 @@ namespace LightNotes
     {
         public uint id;
         public bool forRemoval = false;
-        public string title;
-        public string text;
+        public string title = "";
+        public string text = "";
 
         public NotePrefab()
         {
@@ -24,7 +24,8 @@ namespace LightNotes
 
         private void NotePrefab_Load(object sender, EventArgs e)
         {
-
+            tbox_title.Text = title;
+            tbox_text.Text = text;
         }
 
         private void checkBox1_CheckStateChanged(object sender, EventArgs e)
@@ -32,20 +33,26 @@ namespace LightNotes
             forRemoval = checkBox1.Checked;
         }
 
-        private void UpdateData()
+        public void UpdateData()
         {
             title = tbox_title.Text;
             text = tbox_text.Text;
         }
 
+        public void UpdateText()
+        {
+            tbox_title.Text = title;
+            tbox_text.Text = text;
+        }
+
         private void tbox_title_TextChanged(object sender, EventArgs e)
         {
-            UpdateData();
+            //UpdateData();
         }
 
         private void tbox_text_TextChanged(object sender, EventArgs e)
         {
-            UpdateData();
+            //UpdateData();
         }
     }
 }

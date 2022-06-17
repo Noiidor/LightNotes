@@ -32,6 +32,7 @@ namespace LightNotes
             this.tbox_text = new System.Windows.Forms.TextBox();
             this.tbox_title = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tbox_text
@@ -42,7 +43,6 @@ namespace LightNotes
             this.tbox_text.Name = "tbox_text";
             this.tbox_text.Size = new System.Drawing.Size(244, 207);
             this.tbox_text.TabIndex = 5;
-            this.tbox_text.Text = "Text";
             this.tbox_text.TextChanged += new System.EventHandler(this.tbox_text_TextChanged);
             // 
             // tbox_title
@@ -52,7 +52,6 @@ namespace LightNotes
             this.tbox_title.Name = "tbox_title";
             this.tbox_title.Size = new System.Drawing.Size(213, 30);
             this.tbox_title.TabIndex = 7;
-            this.tbox_title.Text = "Title";
             this.tbox_title.TextChanged += new System.EventHandler(this.tbox_title_TextChanged);
             // 
             // checkBox1
@@ -65,10 +64,19 @@ namespace LightNotes
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckStateChanged += new System.EventHandler(this.checkBox1_CheckStateChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(224, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 13);
+            this.label1.TabIndex = 9;
+            // 
             // NotePrefab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.tbox_title);
             this.Controls.Add(this.tbox_text);
@@ -84,5 +92,6 @@ namespace LightNotes
         private System.Windows.Forms.TextBox tbox_text;
         private System.Windows.Forms.TextBox tbox_title;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
