@@ -17,7 +17,8 @@ namespace LightNotes
         uint highestId;
         bool cornerPanelDragged;
         bool isTopBorderPanelDragged;
-        string dataFilePath;
+        string notesDataPath;
+        string folderPath;
         Point formOffset;
         Timer timer;
 
@@ -28,25 +29,26 @@ namespace LightNotes
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dataFilePath = Directory.GetCurrentDirectory() + @"\data.csv";
+            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
+            notesDataPath = folderPath + @"\notes.csv";
             timer = new Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 30000;
             timer.Start();
 
             dt = new DataTable();
-            if (!File.Exists(dataFilePath))
+            if (!File.Exists(notesDataPath))
             {
-                File.WriteAllText(dataFilePath, Properties.Resources.data);
+                File.WriteAllText(notesDataPath, Properties.Resources.data);
             }
-            if (File.ReadAllLines(dataFilePath).Length == 0 || (File.ReadAllLines(dataFilePath)[0] != Properties.Resources.data) )
+            if (File.ReadAllLines(notesDataPath).Length == 0 || (File.ReadAllLines(notesDataPath)[0] != Properties.Resources.data) )
             {
                 
-                string[] lines = File.ReadAllLines(dataFilePath);
+                string[] lines = File.ReadAllLines(notesDataPath);
                 lines[0] = Properties.Resources.data;
-                File.WriteAllLines(dataFilePath, lines);
+                File.WriteAllLines(notesDataPath, lines);
             }
-            dt = ConvertCSVtoDataTable(dataFilePath);
+            dt = ConvertCSVtoDataTable(notesDataPath);
 
             CreateNotesFromTable();
             dataGridView1.DataSource = dt;
@@ -75,11 +77,11 @@ namespace LightNotes
                 }
                 catch
                 {
-                    var lines = File.ReadAllLines(dataFilePath);
+                    var lines = File.ReadAllLines(notesDataPath);
                     var linesList = lines.ToList();
                     linesList.RemoveAt(i);
                     dt.Rows[i ].Delete();
-                    File.WriteAllLines(dataFilePath, linesList);
+                    File.WriteAllLines(notesDataPath, linesList);
                     continue;
                 }
 
@@ -147,12 +149,12 @@ namespace LightNotes
                     dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
                 }
             }
-            if (!File.Exists(dataFilePath))
+            if (!File.Exists(notesDataPath))
             {
-                var file = File.Create(dataFilePath);
+                var file = File.Create(notesDataPath);
                 file.Close();
             }
-            dt.WriteToCsvFile(dataFilePath);
+            dt.WriteToCsvFile(notesDataPath);
         }
 
 

@@ -34,6 +34,7 @@ namespace LightNotes
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tbox_text
@@ -54,6 +55,7 @@ namespace LightNotes
             this.tbox_title.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbox_title.Font = new System.Drawing.Font("Candara", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbox_title.Location = new System.Drawing.Point(5, 3);
+            this.tbox_title.MaxLength = 40;
             this.tbox_title.Name = "tbox_title";
             this.tbox_title.Size = new System.Drawing.Size(213, 24);
             this.tbox_title.TabIndex = 7;
@@ -63,10 +65,12 @@ namespace LightNotes
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
+            this.checkBox1.FlatAppearance.BorderSize = 0;
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBox1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.checkBox1.Location = new System.Drawing.Point(232, 3);
+            this.checkBox1.Location = new System.Drawing.Point(237, 3);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(15, 14);
+            this.checkBox1.Size = new System.Drawing.Size(12, 11);
             this.checkBox1.TabIndex = 8;
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckStateChanged += new System.EventHandler(this.checkBox1_CheckStateChanged);
@@ -89,11 +93,22 @@ namespace LightNotes
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.SystemColors.GrayText;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label2.Location = new System.Drawing.Point(0, 28);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(220, 1);
+            this.label2.TabIndex = 11;
+            // 
             // NotePrefab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Info;
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBox1);
@@ -113,5 +128,6 @@ namespace LightNotes
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label2;
     }
 }
