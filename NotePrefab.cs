@@ -14,18 +14,20 @@ namespace LightNotes
     {
         public uint id;
         public bool forRemoval = false;
-        public string title = "";
-        public string text = "";
+        public string title;
+        public string[] text;
+        NoteApp app;
 
         public NotePrefab()
         {
             InitializeComponent();
+            
         }
 
         private void NotePrefab_Load(object sender, EventArgs e)
         {
             tbox_title.Text = title;
-            tbox_text.Text = text;
+            tbox_text.Lines = text;
         }
 
         private void checkBox1_CheckStateChanged(object sender, EventArgs e)
@@ -36,13 +38,13 @@ namespace LightNotes
         public void UpdateData()
         {
             title = tbox_title.Text;
-            text = tbox_text.Text;
+            text = tbox_text.Lines;
         }
 
         public void UpdateText()
         {
             tbox_title.Text = title;
-            tbox_text.Text = text;
+            tbox_text.Lines = text;
         }
 
         private void tbox_title_TextChanged(object sender, EventArgs e)
@@ -53,6 +55,12 @@ namespace LightNotes
         private void tbox_text_TextChanged(object sender, EventArgs e)
         {
             //UpdateData();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            app = new NoteApp();
+            app.NoteClicked(sender, e);
         }
     }
 }

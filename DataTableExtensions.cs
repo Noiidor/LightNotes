@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Resources;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,22 +17,22 @@ namespace LightNotes
 
             foreach (var col in dataTable.Columns)
             {
-                fileContent.Append(col.ToString() + ",");
+                fileContent.Append(col.ToString() + ";");
             }
 
-            fileContent.Replace(",", System.Environment.NewLine, fileContent.Length - 1, 1);
+            fileContent.Replace(";", System.Environment.NewLine, fileContent.Length - 1, 1);
 
             foreach (DataRow dr in dataTable.Rows)
             {
                 foreach (var column in dr.ItemArray)
                 {
-                    fileContent.Append("\"" + column.ToString() + "\",");
+                    fileContent.Append("\"" + column.ToString() + "\";");
                 }
 
-                fileContent.Replace(",", System.Environment.NewLine, fileContent.Length - 1, 1);
+                fileContent.Replace(";", System.Environment.NewLine, fileContent.Length - 1, 1);
             }
 
-            System.IO.File.WriteAllText(filePath, fileContent.ToString());
+            File.WriteAllText(filePath, fileContent.ToString());
         }
 
         

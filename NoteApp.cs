@@ -11,17 +11,15 @@ using System.IO;
 
 namespace LightNotes
 {
-
-    
-
     public partial class NoteApp : Form
     {
         DataTable dt;
         uint highestId;
-
         bool cornerPanelDragged;
         bool isTopBorderPanelDragged;
+        string dataFilePath;
         Point formOffset;
+        Timer timer;
 
         public NoteApp()
         {
@@ -30,16 +28,33 @@ namespace LightNotes
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            dataFilePath = Directory.GetCurrentDirectory() + @"\data.csv";
+            timer = new Timer();
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Interval = 30000;
+            timer.Start();
 
             dt = new DataTable();
-            dt = ConvertCSVtoDataTable(@"D:\C#\LightNotes\test.csv");
+            if (!File.Exists(dataFilePath))
+            {
+                File.WriteAllText(dataFilePath, Properties.Resources.data);
+            }
+            if (File.ReadAllLines(dataFilePath).Length == 0 || (File.ReadAllLines(dataFilePath)[0] != Properties.Resources.data) )
+            {
+                
+                string[] lines = File.ReadAllLines(dataFilePath);
+                lines[0] = Properties.Resources.data;
+                File.WriteAllLines(dataFilePath, lines);
+            }
+            dt = ConvertCSVtoDataTable(dataFilePath);
+
             CreateNotesFromTable();
-            //dt.Columns.Add("Id", typeof(uint));
-            //dt.Columns.Add("Title", typeof(string));
-            //dt.Columns.Add("Text", typeof(string));
             dataGridView1.DataSource = dt;
+
             panel2.Parent = this;
             panel2.Location = new Point(this.Width - panel2.Width , this.Height - panel2.Height);
+
+            
             
         }
 
@@ -47,19 +62,33 @@ namespace LightNotes
         {
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                DataRow row = dt.Rows[i];
-                NotePrefab note = new NotePrefab();
-                note.id = Convert.ToUInt32(row.Field<string>("Id"));
-                note.text = row.Field<string>("Text");
-                note.title = row.Field<string>("Title");
-                //note.UpdateText();
-                //label3.Text = row.Field<string>("Text").Replace("\"", ""); 
-                flowLayoutPanel1.Controls.Add(note);
+                try
+                {
+                    DataRow row = dt.Rows[i];
+                    NotePrefab note = new NotePrefab();
+                    note.id = Convert.ToUInt32(row.Field<string>("Id"));
+                    var a = row.Field<string>("Text");
+                    label1.Text = a;
+                    note.text = row.Field<string>("Text").Split(',');
+                    note.title = row.Field<string>("Title");
+                    flowLayoutPanel1.Controls.Add(note);
+                }
+                catch
+                {
+                    var lines = File.ReadAllLines(dataFilePath);
+                    var linesList = lines.ToList();
+                    linesList.RemoveAt(i);
+                    dt.Rows[i ].Delete();
+                    File.WriteAllLines(dataFilePath, linesList);
+                    continue;
+                }
+
             }
-            //foreach (DataRow row in dt.Rows)
-            //{
-                
-            //}
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            SaveData();
         }
 
         private void button_add_Click(object sender, EventArgs e)
@@ -79,7 +108,6 @@ namespace LightNotes
             NotePrefab note = new NotePrefab();
             flowLayoutPanel1.Controls.Add(note);
             note.id = highestId;
-            //label1.Text = flowLayoutPanel1.Controls.ToString();
             
         }
 
@@ -101,11 +129,6 @@ namespace LightNotes
             }
         }
 
-        private void button_save_Click(object sender, EventArgs e)
-        {
-            SaveData();
-        }
-
 
         private void SaveData()
         {
@@ -113,7 +136,7 @@ namespace LightNotes
             {
                 note.UpdateData();
                 string noteTitle = note.title;
-                string noteText = note.text;
+                string[] noteText = note.text;
                 var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
                 if (noteTitle != null)
                 {
@@ -121,23 +144,15 @@ namespace LightNotes
                 }
                 if (noteText != null)
                 {
-                    dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = noteText;
+                    dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
                 }
             }
-            //StringBuilder sb = new StringBuilder();
-
-            //IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
-            //                                  Select(column => column.ColumnName);
-            //sb.AppendLine(string.Join(",", columnNames));
-
-            //foreach (DataRow row in dt.Rows)
-            //{
-            //    IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString());
-            //    sb.AppendLine(string.Join(",", fields));
-            //}
-
-            //File.WriteAllText("test.csv", sb.ToString());
-            dt.WriteToCsvFile(@"D:\C#\LightNotes\test.csv");
+            if (!File.Exists(dataFilePath))
+            {
+                var file = File.Create(dataFilePath);
+                file.Close();
+            }
+            dt.WriteToCsvFile(dataFilePath);
         }
 
 
@@ -188,18 +203,27 @@ namespace LightNotes
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(strFilePath))
             {
-                string[] headers = sr.ReadLine().Split(',');
+                string[] headers = sr.ReadLine().Split(';');
                 foreach (string header in headers)
                 {
                     dt.Columns.Add(header);
                 }
                 while (!sr.EndOfStream)
                 {
-                    string[] rows = sr.ReadLine().Split(',');
+                    string[] rows = sr.ReadLine().Split(';');
                     DataRow dr = dt.NewRow();
                     for (int i = 0; i < headers.Length; i++)
                     {
-                        dr[i] = rows[i].Replace("\"", "");
+                        try
+                        {
+                            dr[i] = rows[i].Replace("\"", "");
+                        }
+                        catch (System.IndexOutOfRangeException)
+                        {
+                            continue;
+                            //dr[i] = ";;";
+                        }
+                        
                     }
                     dt.Rows.Add(dr);
                 }
@@ -208,6 +232,26 @@ namespace LightNotes
 
 
             return dt;
+
+            //string[] Lines = Properties.Resources.data.Split('\n');
+            //string[] Fields;
+            //Fields = Lines[0].Split(new char[] { ';' });
+            //int Cols = Fields.GetLength(0);
+            //DataTable dt = new DataTable();
+            //1st row must be column names; force lower case to ensure matching later on.
+            //for (int i = 0; i < Cols; i++)
+            //    dt.Columns.Add(Fields[i].ToLower(), typeof(string));
+            //DataRow Row;
+            //for (int i = 1; i < Lines.GetLength(0) ; i++)
+            //{
+            //    Fields = Lines[i].Split(new char[] { ';' });
+            //    Row = dt.NewRow();
+            //    for (int f = 0; f < Cols; f++)
+            //        Row[f] = Fields[f];
+            //    dt.Rows.Add(Row);
+            //}
+            //return dt;
+
         }
 
         private void panel2_MouseDown(object sender, MouseEventArgs e)
@@ -226,8 +270,8 @@ namespace LightNotes
         {
             if (cornerPanelDragged)
             {
-                this.Width = panel2.PointToScreen(e.Location).X;
-                this.Height = panel2.PointToScreen(e.Location).Y;
+                this.Width = Math.Min(Math.Max(panel2.PointToScreen(e.Location).X, 780), 2000);
+                this.Height = Math.Min(Math.Max(panel2.PointToScreen(e.Location).Y, 750), 2000);
                 this.Update();
             }
             
@@ -236,6 +280,17 @@ namespace LightNotes
         private void panel2_MouseUp(object sender, MouseEventArgs e)
         {
             cornerPanelDragged = false;
+        }
+
+        
+        public void NoteClicked(Object sender, EventArgs e)
+        {
+            label1.Text = sender.ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveData();
         }
     }
 }
