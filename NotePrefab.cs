@@ -16,7 +16,7 @@ namespace LightNotes
         public bool forRemoval = false;
         public string title;
         public string[] text;
-        NoteApp app;
+        public event EventHandler button_maximizeClick;
 
         public NotePrefab()
         {
@@ -26,6 +26,7 @@ namespace LightNotes
 
         private void NotePrefab_Load(object sender, EventArgs e)
         {
+            this.Tag = "minimized";
             tbox_title.Text = title;
             tbox_text.Lines = text;
         }
@@ -57,10 +58,9 @@ namespace LightNotes
             //UpdateData();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button_maximize_Click(object sender, EventArgs e)
         {
-            app = new NoteApp();
-            app.NoteClicked(sender, e);
+            button_maximizeClick?.Invoke(sender, e);
         }
     }
 }

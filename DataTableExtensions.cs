@@ -35,6 +35,36 @@ namespace LightNotes
             File.WriteAllText(filePath, fileContent.ToString());
         }
 
-        
+        public static void ConvertCSVtoDataTable(this DataTable dataTable, string strFilePath)
+        {
+            using (StreamReader sr = new StreamReader(strFilePath))
+            {
+                string[] headers = sr.ReadLine().Split(';');
+                foreach (string header in headers)
+                {
+                    dataTable.Columns.Add(header);
+                }
+                while (!sr.EndOfStream)
+                {
+                    string[] rows = sr.ReadLine().Split(';');
+                    DataRow dr = dataTable.NewRow();
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        try
+                        {
+                            dr[i] = rows[i].Replace("\"", "");
+                        }
+                        catch (System.IndexOutOfRangeException)
+                        {
+                            continue;
+                        }
+
+                    }
+                    dataTable.Rows.Add(dr);
+                }
+
+            }
+
+        }
     }
 }

@@ -32,12 +32,12 @@ namespace LightNotes
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoteApp));
             this.button_add = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.notesLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.button_delete = new System.Windows.Forms.Button();
             this.button_close = new System.Windows.Forms.Button();
             this.button_minimaze = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.topBorderPanel = new System.Windows.Forms.Panel();
+            this.cornerPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -48,6 +48,7 @@ namespace LightNotes
             this.button_add.BackColor = System.Drawing.Color.LightSalmon;
             this.button_add.FlatAppearance.BorderSize = 0;
             resources.ApplyResources(this.button_add, "button_add");
+            this.button_add.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.button_add.Name = "button_add";
             this.button_add.UseVisualStyleBackColor = false;
             this.button_add.Click += new System.EventHandler(this.button_add_Click);
@@ -59,17 +60,18 @@ namespace LightNotes
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Name = "dataGridView1";
             // 
-            // flowLayoutPanel1
+            // notesLayoutPanel
             // 
-            resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            resources.ApplyResources(this.notesLayoutPanel, "notesLayoutPanel");
+            this.notesLayoutPanel.BackColor = System.Drawing.Color.Transparent;
+            this.notesLayoutPanel.Name = "notesLayoutPanel";
             // 
             // button_delete
             // 
             this.button_delete.BackColor = System.Drawing.Color.LightSalmon;
             this.button_delete.FlatAppearance.BorderSize = 0;
             resources.ApplyResources(this.button_delete, "button_delete");
+            this.button_delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.button_delete.Name = "button_delete";
             this.button_delete.UseVisualStyleBackColor = false;
             this.button_delete.Click += new System.EventHandler(this.button_delete_Click);
@@ -92,23 +94,23 @@ namespace LightNotes
             this.button_minimaze.UseVisualStyleBackColor = false;
             this.button_minimaze.Click += new System.EventHandler(this.button_minimaze_Click);
             // 
-            // panel1
+            // topBorderPanel
             // 
-            resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.BackColor = System.Drawing.Color.Bisque;
-            this.panel1.Name = "panel1";
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
-            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
-            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
+            resources.ApplyResources(this.topBorderPanel, "topBorderPanel");
+            this.topBorderPanel.BackColor = System.Drawing.Color.Bisque;
+            this.topBorderPanel.Name = "topBorderPanel";
+            this.topBorderPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseDown);
+            this.topBorderPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseMove);
+            this.topBorderPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseUp);
             // 
-            // panel2
+            // cornerPanel
             // 
-            resources.ApplyResources(this.panel2, "panel2");
-            this.panel2.BackColor = System.Drawing.Color.Bisque;
-            this.panel2.Name = "panel2";
-            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseDown);
-            this.panel2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseMove);
-            this.panel2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseUp);
+            resources.ApplyResources(this.cornerPanel, "cornerPanel");
+            this.cornerPanel.BackColor = System.Drawing.Color.Bisque;
+            this.cornerPanel.Name = "cornerPanel";
+            this.cornerPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseDown);
+            this.cornerPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseMove);
+            this.cornerPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseUp);
             // 
             // label1
             // 
@@ -127,13 +129,13 @@ namespace LightNotes
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PeachPuff;
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.button_close);
             this.Controls.Add(this.button_minimaze);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.topBorderPanel);
+            this.Controls.Add(this.cornerPanel);
+            this.Controls.Add(this.notesLayoutPanel);
             this.Controls.Add(this.button_add);
             this.Controls.Add(this.button_delete);
             this.Controls.Add(this.dataGridView1);
@@ -150,12 +152,12 @@ namespace LightNotes
 
         private System.Windows.Forms.Button button_add;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel notesLayoutPanel;
         private System.Windows.Forms.Button button_delete;
         private System.Windows.Forms.Button button_close;
         private System.Windows.Forms.Button button_minimaze;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel topBorderPanel;
+        private System.Windows.Forms.Panel cornerPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
     }

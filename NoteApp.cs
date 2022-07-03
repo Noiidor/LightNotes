@@ -15,8 +15,9 @@ namespace LightNotes
     {
         DataTable dt;
         uint highestId;
+        int noteIndex;
         bool cornerPanelDragged;
-        bool isTopBorderPanelDragged;
+        bool topBorderPanelDragged;
         string notesDataPath;
         string folderPath;
         Point formOffset;
@@ -48,16 +49,27 @@ namespace LightNotes
                 lines[0] = Properties.Resources.data;
                 File.WriteAllLines(notesDataPath, lines);
             }
-            dt = ConvertCSVtoDataTable(notesDataPath);
 
+            dt.ConvertCSVtoDataTable(notesDataPath);
             CreateNotesFromTable();
             dataGridView1.DataSource = dt;
 
-            panel2.Parent = this;
-            panel2.Location = new Point(this.Width - panel2.Width , this.Height - panel2.Height);
+            cornerPanel.Parent = this;
+            cornerPanel.Location = new Point(this.Width - cornerPanel.Width , this.Height - cornerPanel.Height);
+            cornerPanel.BringToFront();
 
             
             
+        }
+
+        private void CreateNote(uint id, string title, string[] text)
+        {
+            NotePrefab note = new NotePrefab();
+            note.id = id;
+            note.title = title;
+            note.text = text;
+            notesLayoutPanel.Controls.Add(note);
+            note.button_maximizeClick += Note_button_maximizeClick;
         }
 
         private void CreateNotesFromTable()
@@ -67,24 +79,46 @@ namespace LightNotes
                 try
                 {
                     DataRow row = dt.Rows[i];
-                    NotePrefab note = new NotePrefab();
-                    note.id = Convert.ToUInt32(row.Field<string>("Id"));
-                    var a = row.Field<string>("Text");
-                    label1.Text = a;
-                    note.text = row.Field<string>("Text").Split(',');
-                    note.title = row.Field<string>("Title");
-                    flowLayoutPanel1.Controls.Add(note);
+                    uint id = Convert.ToUInt32(row.Field<string>("Id"));
+                    string title = row.Field<string>("Title");
+                    string[] text = row.Field<string>("Text").Split(',');
+                    CreateNote(id, title, text);
                 }
                 catch
                 {
                     var lines = File.ReadAllLines(notesDataPath);
                     var linesList = lines.ToList();
                     linesList.RemoveAt(i);
-                    dt.Rows[i ].Delete();
+                    dt.Rows[i].Delete();
                     File.WriteAllLines(notesDataPath, linesList);
                     continue;
                 }
 
+            }
+        }
+
+        private void Note_button_maximizeClick(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            Control note = btn.Parent;
+            if (note.Tag.ToString() == "minimized")
+            {
+                noteIndex = notesLayoutPanel.Controls.GetChildIndex(note);
+                note.Size = new Size(this.Width, this.Height - topBorderPanel.Height);
+                note.Parent = this;
+                note.Location = new Point(0, topBorderPanel.Height);
+                //note.Dock = DockStyle.Fill;
+                note.BringToFront();
+                //cornerPanel.BringToFront();
+                //note.BringToFront();
+                note.Tag = "maximized";
+            }
+            else
+            {
+                note.Size = new Size(250, 250);
+                note.Parent = notesLayoutPanel;
+                notesLayoutPanel.Controls.SetChildIndex(note, noteIndex);
+                note.Tag = "minimized";
             }
         }
 
@@ -106,27 +140,23 @@ namespace LightNotes
                 highestId = Convert.ToUInt32(dt.Compute("max([Id])", string.Empty)) + 1;
                 dt.Rows.Add(highestId, string.Empty, string.Empty);
             }
-
-            NotePrefab note = new NotePrefab();
-            flowLayoutPanel1.Controls.Add(note);
-            note.id = highestId;
-            
+            CreateNote(highestId, String.Empty, new string[] { });
         }
 
 
         private void button_delete_Click(object sender, EventArgs e)
         {
-            NotePrefab[] noteArr = new NotePrefab[flowLayoutPanel1.Controls.Count];
-            flowLayoutPanel1.Controls.CopyTo(noteArr, 0);
+            NotePrefab[] noteArr = new NotePrefab[notesLayoutPanel.Controls.Count];
+            notesLayoutPanel.Controls.CopyTo(noteArr, 0);
 
             foreach (NotePrefab note in noteArr)
             {
-                if (note.forRemoval == true)
+                if (note.forRemoval)
                 {
                     var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
                     dt.Rows.RemoveAt(rowIndex);
 
-                    flowLayoutPanel1.Controls.Remove(note);
+                    notesLayoutPanel.Controls.Remove(note);
                 }
             }
         }
@@ -134,7 +164,7 @@ namespace LightNotes
 
         private void SaveData()
         {
-            foreach (NotePrefab note in flowLayoutPanel1.Controls)
+            foreach (NotePrefab note in notesLayoutPanel.Controls)
             {
                 note.UpdateData();
                 string noteTitle = note.title;
@@ -169,11 +199,11 @@ namespace LightNotes
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void panel1_MouseDown(object sender, MouseEventArgs e)
+        private void topBorderPanel_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                isTopBorderPanelDragged = true;
+                topBorderPanelDragged = true;
                 Point startPosition = this.PointToScreen(new Point( e.X, e.Y));
                 formOffset = new Point();
                 formOffset.X = this.Location.X - startPosition.X;
@@ -181,82 +211,27 @@ namespace LightNotes
             }
             else
             {
-                isTopBorderPanelDragged = false;
+                topBorderPanelDragged = false;
             }
         }
 
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        private void topBorderPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isTopBorderPanelDragged)
+            if (topBorderPanelDragged)
             {
-                Point newPoint = panel1.PointToScreen(new Point(e.X, e.Y));
+                Point newPoint = topBorderPanel.PointToScreen(new Point(e.X, e.Y));
                 newPoint.Offset(formOffset);
                 this.Location = newPoint;
             }
         }
 
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
+        private void topBorderPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            isTopBorderPanelDragged = false;
+            topBorderPanelDragged = false;
         }
 
-        public static DataTable ConvertCSVtoDataTable(string strFilePath)
-        {
-            DataTable dt = new DataTable();
-            using (StreamReader sr = new StreamReader(strFilePath))
-            {
-                string[] headers = sr.ReadLine().Split(';');
-                foreach (string header in headers)
-                {
-                    dt.Columns.Add(header);
-                }
-                while (!sr.EndOfStream)
-                {
-                    string[] rows = sr.ReadLine().Split(';');
-                    DataRow dr = dt.NewRow();
-                    for (int i = 0; i < headers.Length; i++)
-                    {
-                        try
-                        {
-                            dr[i] = rows[i].Replace("\"", "");
-                        }
-                        catch (System.IndexOutOfRangeException)
-                        {
-                            continue;
-                            //dr[i] = ";;";
-                        }
-                        
-                    }
-                    dt.Rows.Add(dr);
-                }
 
-            }
-
-
-            return dt;
-
-            //string[] Lines = Properties.Resources.data.Split('\n');
-            //string[] Fields;
-            //Fields = Lines[0].Split(new char[] { ';' });
-            //int Cols = Fields.GetLength(0);
-            //DataTable dt = new DataTable();
-            //1st row must be column names; force lower case to ensure matching later on.
-            //for (int i = 0; i < Cols; i++)
-            //    dt.Columns.Add(Fields[i].ToLower(), typeof(string));
-            //DataRow Row;
-            //for (int i = 1; i < Lines.GetLength(0) ; i++)
-            //{
-            //    Fields = Lines[i].Split(new char[] { ';' });
-            //    Row = dt.NewRow();
-            //    for (int f = 0; f < Cols; f++)
-            //        Row[f] = Fields[f];
-            //    dt.Rows.Add(Row);
-            //}
-            //return dt;
-
-        }
-
-        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        private void cornerPanel_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -268,26 +243,20 @@ namespace LightNotes
             }
         }
 
-        private void panel2_MouseMove(object sender, MouseEventArgs e)
+        private void cornerPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (cornerPanelDragged)
             {
-                this.Width = Math.Min(Math.Max(panel2.PointToScreen(e.Location).X, 780), 2000);
-                this.Height = Math.Min(Math.Max(panel2.PointToScreen(e.Location).Y, 750), 2000);
+                this.Width = cornerPanel.PointToScreen(e.Location).X;
+                this.Height = cornerPanel.PointToScreen(e.Location).Y;
                 this.Update();
             }
             
         }
 
-        private void panel2_MouseUp(object sender, MouseEventArgs e)
+        private void cornerPanel_MouseUp(object sender, MouseEventArgs e)
         {
             cornerPanelDragged = false;
-        }
-
-        
-        public void NoteClicked(Object sender, EventArgs e)
-        {
-            label1.Text = sender.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
