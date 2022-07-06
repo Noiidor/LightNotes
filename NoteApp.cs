@@ -6,36 +6,68 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 using System.Windows.Forms;
 using System.IO;
+using ExtentionMethods;
 
 namespace LightNotes
 {
     public partial class NoteApp : Form
     {
-        DataTable dt;
-        uint highestId;
-        int noteIndex;
-        bool cornerPanelDragged;
-        bool topBorderPanelDragged;
-        string notesDataPath;
-        string folderPath;
-        Point formOffset;
-        Timer timer;
+        private DataTable dt;
+        private uint highestId;
+        private int noteIndex;
+        private bool cornerPanelDragged;
+        private bool topBorderPanelDragged;
+        private string notesDataPath;
+        private string folderPath;
+
+        private Point formOffset;
+        private Point noteOffset;
+        private Point borderOffset;
+
+        private Timer timer;
+
+        private Point noteCenter;
+        private Point noteNearestCenter;
+
+        private Graphics graph;
+
+        private enum noteState
+        {
+            Minimized,
+            Maximized,
+            Dragged
+
+        }
 
         public NoteApp()
         {
             InitializeComponent();
         }
 
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleparams = base.CreateParams;
+                handleparams.ExStyle |= 0x02000000;
+                return handleparams;
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
             notesDataPath = folderPath + @"\notes.csv";
+            
             timer = new Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 30000;
             timer.Start();
+
+            graph = this.CreateGraphics();
 
             dt = new DataTable();
             if (!File.Exists(notesDataPath))
@@ -51,28 +83,184 @@ namespace LightNotes
             }
 
             dt.ConvertCSVtoDataTable(notesDataPath);
-            CreateNotesFromTable();
+            CreateNotesFromTable(dt);
             dataGridView1.DataSource = dt;
 
             cornerPanel.Parent = this;
             cornerPanel.Location = new Point(this.Width - cornerPanel.Width , this.Height - cornerPanel.Height);
             cornerPanel.BringToFront();
+        }
 
+        
+
+        private void Note_panel_dragMouseUp(object sender, EventArgs e)
+        {
+            Panel panel = (Panel)sender;
+            Control note = panel.Parent;
+
+            if (note.Tag.ToString().ToLower() == noteState.Dragged.ToString().ToLower())
+            {
             
+                note.Parent = notesLayoutPanel;
+                notesLayoutPanel.BorderStyle = BorderStyle.None;
+
+                Dictionary<int, Vector2> noteCoordDict = new Dictionary<int, Vector2>();
+                foreach (Control noteControl in notesLayoutPanel.Controls)
+                {
+                    Point noteControlCenter = noteControl.Location.Add(new Point(noteControl.Width / 2, noteControl.Height / 2));
+                    noteCoordDict.Add(notesLayoutPanel.Controls.GetChildIndex(noteControl), noteControlCenter.ToVector2());
+                }
+                Dictionary<int, float> noteDistDict = new Dictionary<int, float>();
+                foreach (KeyValuePair<int, Vector2> noteCoord in noteCoordDict)
+                {
+                    noteDistDict.Add(noteCoord.Key, Vector2.Distance(noteCoord.Value, noteCenter.ToVector2()));
+                }
+                KeyValuePair<int, float> noteNearest = noteDistDict.OrderBy(kvp => kvp.Value).First();
+
+                int noteNearestIndex = noteNearest.Key;
+
+                Control noteNearestControl = notesLayoutPanel.Controls[noteNearestIndex];
+                noteNearestCenter = noteNearestControl.Location.Add(new Point(noteNearestControl.Width / 2, noteNearestControl.Height / 2));
+
+                if (noteNearestCenter.X > noteCenter.X)
+                {
+                    notesLayoutPanel.Controls.SetChildIndex(note, noteNearestIndex);
+
+                }
+                if (noteNearestCenter.X < noteCenter.X)
+                {
+                    notesLayoutPanel.Controls.SetChildIndex(note, noteNearestIndex + 1);
+                }
+                note.Tag = noteState.Minimized;
+            }
+
+        }
+
+        private void Note_panel_dragMouseMove(object sender, EventArgs e)
+        {
+            Panel panel = (Panel)sender;
+            Control note = panel.Parent;
+
+
+            if (note.Tag.ToString() == noteState.Dragged.ToString())
+            {
+                //Pen pen = new Pen(Color.DarkGray, 10);
+                //Rectangle rect = new Rectangle(new Point(MousePosition.X - 200, MousePosition.Y), new Size(250, 250));
+                //graph.DrawRectangle(pen, rect);
+                
+                noteCenter = note.Location.Add(new Point(note.Width / 2, note.Height / 2));
+
+                Point newPoint = MousePosition;
+                newPoint.Offset(noteOffset);
+                note.Location = newPoint;
+            }
+        }
+
+        private void Note_panel_dragMouseDown(object sender, EventArgs e)
+        {
+            
+            Panel panel = (Panel)sender;
+            Control note = panel.Parent;
+            
+            if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
+            {
+                notesLayoutPanel.BorderStyle = BorderStyle.FixedSingle;
+                noteOffset = new Point();
+                noteOffset.X = note.Location.X - MousePosition.X;
+                noteOffset.Y = -note.PointToScreen(Point.Empty).Y + this.PointToClient(MousePosition).Y - note.PointToClient(MousePosition).Y*2;
+                note.Tag = noteState.Dragged;
+                note.Parent = this;
+                note.BringToFront();
+            }
             
         }
 
-        private void CreateNote(uint id, string title, string[] text)
+
+
+
+
+        #region DataManagment
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            SaveData();
+        }
+
+
+        private void SaveData()
+        {
+            foreach (NotePrefab note in notesLayoutPanel.Controls)
+            {
+                note.UpdateData();
+                string noteTitle = note.title;
+                string[] noteText = note.text;
+
+                var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
+                if (noteTitle != null)
+                {
+                    dt.Rows[rowIndex][dt.Columns["Title"].Ordinal] = noteTitle;
+                }
+                if (noteText != null)
+                {
+                    dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
+                }
+                dt.Rows[rowIndex][dt.Columns["Position"].Ordinal] = notesLayoutPanel.Controls.GetChildIndex(note);
+            }
+            if (!File.Exists(notesDataPath))
+            {
+                var file = File.Create(notesDataPath);
+                file.Close();
+            }
+            dt.WriteToCsvFile(notesDataPath);
+        }
+
+        #endregion
+
+        #region NotesManagment
+
+        private void Note_button_maximizeClick(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            Control note = btn.Parent;
+            NotePrefab prefab = (NotePrefab)note;
+            if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
+            {
+                noteIndex = notesLayoutPanel.Controls.GetChildIndex(note);
+                prefab.panel_drag.Visible = false;
+                note.Size = new Size(this.Width, this.Height - topBorderPanel.Height);
+                note.Parent = this;
+                note.Location = new Point(0, topBorderPanel.Height);
+                note.BringToFront();
+                note.Tag = noteState.Maximized;
+            }
+            else
+            {
+                prefab.panel_drag.Visible = true;
+                note.Size = new Size(250, 250);
+                note.Parent = notesLayoutPanel;
+                notesLayoutPanel.Controls.SetChildIndex(note, noteIndex);
+                note.Tag = noteState.Minimized;
+            }
+        }
+
+        private void CreateNote(uint id, string title, string[] text, int position)
         {
             NotePrefab note = new NotePrefab();
             note.id = id;
             note.title = title;
             note.text = text;
+            Control noteControl = (Control)note;
+            noteControl.Tag = noteState.Minimized;
+            //note.Tag = noteState.Minimized;
             notesLayoutPanel.Controls.Add(note);
+            notesLayoutPanel.Controls.SetChildIndex(note, position);
             note.button_maximizeClick += Note_button_maximizeClick;
+            note.panel_dragMouseDown += Note_panel_dragMouseDown;
+            note.panel_dragMouseMove += Note_panel_dragMouseMove;
+            note.panel_dragMouseUp += Note_panel_dragMouseUp;
         }
 
-        private void CreateNotesFromTable()
+        private void CreateNotesFromTable(DataTable dt)
         {
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -82,7 +270,8 @@ namespace LightNotes
                     uint id = Convert.ToUInt32(row.Field<string>("Id"));
                     string title = row.Field<string>("Title");
                     string[] text = row.Field<string>("Text").Split(',');
-                    CreateNote(id, title, text);
+                    int position = Convert.ToInt32(row.Field<string>("Position"));
+                    CreateNote(id, title, text, position);
                 }
                 catch
                 {
@@ -97,39 +286,9 @@ namespace LightNotes
             }
         }
 
-        private void Note_button_maximizeClick(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            Control note = btn.Parent;
-            if (note.Tag.ToString() == "minimized")
-            {
-                noteIndex = notesLayoutPanel.Controls.GetChildIndex(note);
-                note.Size = new Size(this.Width, this.Height - topBorderPanel.Height);
-                note.Parent = this;
-                note.Location = new Point(0, topBorderPanel.Height);
-                //note.Dock = DockStyle.Fill;
-                note.BringToFront();
-                //cornerPanel.BringToFront();
-                //note.BringToFront();
-                note.Tag = "maximized";
-            }
-            else
-            {
-                note.Size = new Size(250, 250);
-                note.Parent = notesLayoutPanel;
-                notesLayoutPanel.Controls.SetChildIndex(note, noteIndex);
-                note.Tag = "minimized";
-            }
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            SaveData();
-        }
-
         private void button_add_Click(object sender, EventArgs e)
         {
-            
+
             if (dt.Rows.Count == 0)
             {
                 highestId = 0;
@@ -140,7 +299,7 @@ namespace LightNotes
                 highestId = Convert.ToUInt32(dt.Compute("max([Id])", string.Empty)) + 1;
                 dt.Rows.Add(highestId, string.Empty, string.Empty);
             }
-            CreateNote(highestId, String.Empty, new string[] { });
+            CreateNote(highestId, String.Empty, new string[] { }, 0);
         }
 
 
@@ -161,32 +320,9 @@ namespace LightNotes
             }
         }
 
+        #endregion
 
-        private void SaveData()
-        {
-            foreach (NotePrefab note in notesLayoutPanel.Controls)
-            {
-                note.UpdateData();
-                string noteTitle = note.title;
-                string[] noteText = note.text;
-                var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
-                if (noteTitle != null)
-                {
-                    dt.Rows[rowIndex][dt.Columns["Title"].Ordinal] = noteTitle;
-                }
-                if (noteText != null)
-                {
-                    dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
-                }
-            }
-            if (!File.Exists(notesDataPath))
-            {
-                var file = File.Create(notesDataPath);
-                file.Close();
-            }
-            dt.WriteToCsvFile(notesDataPath);
-        }
-
+        #region WindowManagment
 
         private void button_close_Click(object sender, EventArgs e)
         {
@@ -235,6 +371,9 @@ namespace LightNotes
         {
             if (e.Button == MouseButtons.Left)
             {
+                borderOffset = new Point();
+                borderOffset.X = cornerPanel.Location.X - MousePosition.X + cornerPanel.Width;
+                borderOffset.Y = cornerPanel.Location.Y - MousePosition.Y + cornerPanel.Height;
                 cornerPanelDragged = true;
             }
             else
@@ -247,8 +386,10 @@ namespace LightNotes
         {
             if (cornerPanelDragged)
             {
-                this.Width = cornerPanel.PointToScreen(e.Location).X;
-                this.Height = cornerPanel.PointToScreen(e.Location).Y;
+                Point newPoint = MousePosition;
+                newPoint.Offset(borderOffset);
+                this.Width = newPoint.X;
+                this.Height = newPoint.Y;
                 this.Update();
             }
             
@@ -263,5 +404,7 @@ namespace LightNotes
         {
             SaveData();
         }
+
+        #endregion
     }
 }

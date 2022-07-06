@@ -35,6 +35,7 @@ namespace LightNotes
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button_maximize = new System.Windows.Forms.Button();
+            this.panel_drag = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // tbox_text
@@ -108,6 +109,7 @@ namespace LightNotes
             // 
             this.button_maximize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_maximize.BackColor = System.Drawing.SystemColors.Info;
+            this.button_maximize.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_maximize.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
             this.button_maximize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_maximize.ForeColor = System.Drawing.SystemColors.GrayText;
@@ -119,11 +121,26 @@ namespace LightNotes
             this.button_maximize.UseVisualStyleBackColor = false;
             this.button_maximize.Click += new System.EventHandler(this.button_maximize_Click);
             // 
+            // panel_drag
+            // 
+            this.panel_drag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel_drag.BackColor = System.Drawing.Color.Bisque;
+            this.panel_drag.Cursor = System.Windows.Forms.Cursors.SizeAll;
+            this.panel_drag.Location = new System.Drawing.Point(237, 17);
+            this.panel_drag.Name = "panel_drag";
+            this.panel_drag.Size = new System.Drawing.Size(11, 11);
+            this.panel_drag.TabIndex = 13;
+            this.panel_drag.DragOver += new System.Windows.Forms.DragEventHandler(this.panel_drag_DragOver);
+            this.panel_drag.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_drag_MouseDown);
+            this.panel_drag.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_drag_MouseMove);
+            this.panel_drag.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_drag_MouseUp);
+            // 
             // NotePrefab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Info;
+            this.Controls.Add(this.panel_drag);
             this.Controls.Add(this.button_maximize);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -145,5 +162,6 @@ namespace LightNotes
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_maximize;
+        public System.Windows.Forms.Panel panel_drag;
     }
 }

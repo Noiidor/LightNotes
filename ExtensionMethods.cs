@@ -5,9 +5,11 @@ using System.Text;
 using System.Data;
 using System.Resources;
 using System.IO;
+using System.Numerics;
+using System.Drawing;
 using System.Threading.Tasks;
 
-namespace LightNotes
+namespace ExtentionMethods
 {
     public static class DataTableExtensions
     {
@@ -65,6 +67,19 @@ namespace LightNotes
 
             }
 
+        }
+    }
+
+    public static class PointExtentions
+    {
+        public static Vector2 ToVector2(this Point point)
+        {
+            return new Vector2(point.X, point.Y);
+        }
+
+        public static Point Add(this Point a, Point b)
+        {
+            return Point.Add(a, (Size)b);
         }
     }
 }

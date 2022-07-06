@@ -13,10 +13,15 @@ namespace LightNotes
     public partial class NotePrefab : UserControl
     {
         public uint id;
-        public bool forRemoval = false;
         public string title;
         public string[] text;
+        public bool forRemoval = false;
+
+
         public event EventHandler button_maximizeClick;
+        public event EventHandler panel_dragMouseDown;
+        public event EventHandler panel_dragMouseMove;
+        public event EventHandler panel_dragMouseUp;
 
         public NotePrefab()
         {
@@ -61,6 +66,26 @@ namespace LightNotes
         private void button_maximize_Click(object sender, EventArgs e)
         {
             button_maximizeClick?.Invoke(sender, e);
+        }
+
+        private void panel_drag_MouseDown(object sender, MouseEventArgs e)
+        {
+            panel_dragMouseDown?.Invoke(sender, e);
+        }
+
+        private void panel_drag_MouseMove(object sender, MouseEventArgs e)
+        {
+            panel_dragMouseMove?.Invoke(sender, e);
+        }
+
+        private void panel_drag_MouseUp(object sender, MouseEventArgs e)
+        {
+            panel_dragMouseUp?.Invoke(sender, e);
+        }
+
+        private void panel_drag_DragOver(object sender, DragEventArgs e)
+        {
+            
         }
     }
 }

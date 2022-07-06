@@ -40,12 +40,16 @@ namespace LightNotes
             this.cornerPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // button_add
             // 
             this.button_add.BackColor = System.Drawing.Color.LightSalmon;
+            this.button_add.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_add.FlatAppearance.BorderSize = 0;
             resources.ApplyResources(this.button_add, "button_add");
             this.button_add.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -69,6 +73,7 @@ namespace LightNotes
             // button_delete
             // 
             this.button_delete.BackColor = System.Drawing.Color.LightSalmon;
+            this.button_delete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_delete.FlatAppearance.BorderSize = 0;
             resources.ApplyResources(this.button_delete, "button_delete");
             this.button_delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -107,6 +112,7 @@ namespace LightNotes
             // 
             resources.ApplyResources(this.cornerPanel, "cornerPanel");
             this.cornerPanel.BackColor = System.Drawing.Color.Bisque;
+            this.cornerPanel.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.cornerPanel.Name = "cornerPanel";
             this.cornerPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseDown);
             this.cornerPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseMove);
@@ -124,11 +130,29 @@ namespace LightNotes
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
             // NoteApp
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PeachPuff;
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.button_close);
             this.Controls.Add(this.button_minimaze);
             this.Controls.Add(this.button1);
@@ -160,6 +184,9 @@ namespace LightNotes
         private System.Windows.Forms.Panel cornerPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 
