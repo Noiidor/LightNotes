@@ -39,6 +39,7 @@ namespace ExtentionMethods
 
         public static void ConvertCSVtoDataTable(this DataTable dataTable, string strFilePath)
         {
+            dataTable.Columns.Clear();
             using (StreamReader sr = new StreamReader(strFilePath))
             {
                 string[] headers = sr.ReadLine().Split(';');
