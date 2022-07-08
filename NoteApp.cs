@@ -13,29 +13,25 @@ using ExtentionMethods;
 
 namespace LightNotes
 {
-    public partial class NoteApp : Form
+    public partial class NoteApp : UserControl
     {
-        private DataTable dt;
-        private uint highestId;
-        private int noteIndex;
-        private bool cornerPanelDragged;
-        private bool topBorderPanelDragged;
-        private string notesDataPath;
-        private string folderPath;
 
-        private Point formOffset;
-        private Point noteOffset;
-        private Point borderOffset;
+        public DataTable dt;
+        public uint highestId;
+        public int noteIndex;
+        public string notesDataPath;
 
-        private Timer timer;
+        public Point noteOffset;
 
-        private Point noteCenter;
-        private int placeholderIndex;
+        public Point noteCenter;
+        public int placeholderIndex;
 
-        private int corruptIndex;
-        private bool corruptTriggered;
+        public int corruptIndex;
+        public bool corruptTriggered;
 
-        private enum noteState
+        AppBase app;
+
+        public enum noteState
         {
             Minimized,
             Maximized,
@@ -48,6 +44,18 @@ namespace LightNotes
             InitializeComponent();
         }
 
+        private void NoteApp_Load(object sender, EventArgs e)
+        {
+            app = (AppBase)this.Parent;
+            notesDataPath = app.notesDataPath;
+
+            dt = new DataTable();
+            dt.ConvertCSVtoDataTable(notesDataPath);
+            CreateNotesFromTable(dt);
+            dataGridView1.DataSource = dt;
+        }
+        
+
         protected override CreateParams CreateParams
         {
             get
@@ -58,84 +66,7 @@ namespace LightNotes
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
-            notesDataPath = folderPath + @"\notes.csv";
-            
-            timer = new Timer();
-            timer.Tick += new EventHandler(timer_Tick);
-            timer.Interval = 30000;
-            timer.Start();
 
-            
-
-            dt = new DataTable();
-            if (!File.Exists(notesDataPath))
-            {
-                File.WriteAllText(notesDataPath, Properties.Resources.data);
-            }
-            if (File.ReadAllLines(notesDataPath).Length == 0 || (File.ReadAllLines(notesDataPath)[0] != Properties.Resources.data) )
-            {
-                
-                string[] lines = File.ReadAllLines(notesDataPath);
-                lines[0] = Properties.Resources.data;
-                File.WriteAllLines(notesDataPath, lines);
-            }
-
-            dt.ConvertCSVtoDataTable(notesDataPath);
-            CreateNotesFromTable(dt);
-            dataGridView1.DataSource = dt;
-
-            cornerPanel.Parent = this;
-            cornerPanel.Location = new Point(this.Width - cornerPanel.Width , this.Height - cornerPanel.Height);
-            cornerPanel.BringToFront();
-        }
-
-
-
-
-
-        #region DataManagment
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            SaveData();
-        }
-
-
-        private void SaveData()
-        {
-            foreach (NotePrefab note in notesLayoutPanel.Controls.OfType<NotePrefab>())
-            {
-                if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
-                {
-
-                    note.UpdateData();
-                    string noteTitle = note.title;
-                    string[] noteText = note.text;
-
-                    var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
-                    if (noteTitle != null)
-                    {
-                        dt.Rows[rowIndex][dt.Columns["Title"].Ordinal] = noteTitle;
-                    }
-                    if (noteText != null)
-                    {
-                        dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
-                    }
-                    dt.Rows[rowIndex][dt.Columns["Position"].Ordinal] = notesLayoutPanel.Controls.GetChildIndex(note);
-                }
-            }
-            if (!File.Exists(notesDataPath))
-            {
-                var file = File.Create(notesDataPath);
-                file.Close();
-            }
-            dt.WriteToCsvFile(notesDataPath);
-        }
-
-        #endregion
 
         #region NotesManagment
 
@@ -228,9 +159,9 @@ namespace LightNotes
             {
                 noteIndex = notesLayoutPanel.Controls.GetChildIndex(note);
                 prefab.panel_drag.Visible = false;
-                note.Size = new Size(this.Width, this.Height - topBorderPanel.Height);
+                note.Size = new Size(this.Width, this.Height - app.topBorderPanel.Height);
                 note.Parent = this;
-                note.Location = new Point(0, topBorderPanel.Height);
+                note.Location = new Point(0, app.topBorderPanel.Height);
                 note.BringToFront();
                 note.Tag = noteState.Maximized;
             }
@@ -252,7 +183,6 @@ namespace LightNotes
             note.text = text;
             Control noteControl = (Control)note;
             noteControl.Tag = noteState.Minimized;
-            //note.Tag = noteState.Minimized;
             notesLayoutPanel.Controls.Add(note);
             notesLayoutPanel.Controls.SetChildIndex(note, position);
             note.button_maximizeClick += Note_button_maximizeClick;
@@ -306,7 +236,9 @@ namespace LightNotes
                 highestId = Convert.ToUInt32(dt.Compute("max([Id])", string.Empty)) + 1;
                 dt.Rows.Add(highestId, string.Empty, string.Empty);
             }
+            label1.Text = notesLayoutPanel.Controls.Count.ToString();
             CreateNote(highestId, String.Empty, new string[] { }, 0);
+            
         }
 
 
@@ -329,88 +261,7 @@ namespace LightNotes
 
         #endregion
 
-        #region WindowManagment
-
-        private void button_close_Click(object sender, EventArgs e)
-        {
-            SaveData();
-            Application.Exit();
-        }
-
-        private void button_minimaze_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void topBorderPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                topBorderPanelDragged = true;
-                Point startPosition = this.PointToScreen(new Point( e.X, e.Y));
-                formOffset = new Point();
-                formOffset.X = this.Location.X - startPosition.X;
-                formOffset.Y = this.Location.Y - startPosition.Y;
-            }
-            else
-            {
-                topBorderPanelDragged = false;
-            }
-        }
-
-        private void topBorderPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (topBorderPanelDragged)
-            {
-                Point newPoint = topBorderPanel.PointToScreen(new Point(e.X, e.Y));
-                newPoint.Offset(formOffset);
-                this.Location = newPoint;
-            }
-        }
-
-        private void topBorderPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            topBorderPanelDragged = false;
-        }
-
-
-        private void cornerPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                borderOffset = new Point();
-                borderOffset.X = cornerPanel.Location.X - MousePosition.X + cornerPanel.Width;
-                borderOffset.Y = cornerPanel.Location.Y - MousePosition.Y + cornerPanel.Height;
-                cornerPanelDragged = true;
-            }
-            else
-            {
-                cornerPanelDragged = false;
-            }
-        }
-
-        private void cornerPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (cornerPanelDragged)
-            {
-                Point newPoint = MousePosition;
-                newPoint.Offset(borderOffset);
-                this.Width = newPoint.X;
-                this.Height = newPoint.Y;
-                this.Update();
-            }
-            
-        }
-
-        private void cornerPanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            cornerPanelDragged = false;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
-        }
+        
 
         private void Pop_button_corruptClick(object sender, EventArgs e)
         {
@@ -423,9 +274,8 @@ namespace LightNotes
             dt.WriteToCsvFile(notesDataPath);
             notesLayoutPanel.Controls.Clear();
             CreateNotesFromTable(dt);
-            
-        }
 
-        #endregion
+        }
     }
 }
+

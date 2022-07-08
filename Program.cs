@@ -16,7 +16,7 @@ namespace LightNotes
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new NoteApp());
+            Application.Run(new AppBase());
         }
     }
 }
