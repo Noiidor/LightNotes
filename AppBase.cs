@@ -18,7 +18,8 @@ namespace LightNotes
         private bool cornerPanelDragged;
         private bool topBorderPanelDragged;
         public string notesDataPath;
-        private string folderPath;
+        public string listDataPath;
+        public string folderPath;
 
         private Point formOffset;
         private Point borderOffset;
@@ -53,10 +54,11 @@ namespace LightNotes
             folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
             notesDataPath = folderPath + @"\notes.csv";
             
+
             timer = new Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 30000;
-            timer.Start();
+            //timer.Start();
 
 
             if (!File.Exists(notesDataPath))
@@ -78,11 +80,12 @@ namespace LightNotes
             button_close.BringToFront();
             button_minimaze.BringToFront();
 
-            NoteApp noteApp = new NoteApp();
-            noteApp.Location = new Point(panel1.Width, topBorderPanel.Height);
-            noteApp.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
-            
-            Controls.Add(noteApp);
+            NoteControl noteControl = new NoteControl();
+            noteControl.Tag = "usercontrol";
+            //noteControl.Location = new Point(panel1.Width, topBorderPanel.Height);
+            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+
+            panel_controls.Controls.Add(noteControl);
             
             //noteApp.Dock = DockStyle.Top;
             
@@ -103,7 +106,7 @@ namespace LightNotes
         private void SaveData()
         {
             Control noteControl = Controls.Find("NoteApp", true).First();
-            NoteApp noteApp = (NoteApp)noteControl;
+            NoteControl noteApp = (NoteControl)noteControl;
             DataTable notesDt = noteApp.dt;
             foreach (NotePrefab note in noteApp.notesLayoutPanel.Controls.OfType<NotePrefab>())
             {
@@ -221,5 +224,24 @@ namespace LightNotes
         }
 
         #endregion
+
+        private void button_notes_Click(object sender, EventArgs e)
+        {
+            panel_controls.Controls.Clear();
+            NoteControl noteControl = new NoteControl();
+            noteControl.Tag = "usercontrol";
+            //noteControl.Location = new Point(panel1.Width, topBorderPanel.Height);
+            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+
+            panel_controls.Controls.Add(noteControl);
+        }
+
+        private void button_list_Click(object sender, EventArgs e)
+        {
+            panel_controls.Controls.Clear();
+            ListControl listControl = new ListControl();
+            listControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+            panel_controls.Controls.Add(listControl);
+        }
     }
 }

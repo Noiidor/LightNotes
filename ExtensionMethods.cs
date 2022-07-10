@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Resources;
+
 using System.IO;
 using System.Numerics;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ExtentionMethods
 {
@@ -68,6 +70,38 @@ namespace ExtentionMethods
 
             }
 
+        }
+
+        public static void FromDataGridView(this DataTable dt, DataGridView dg)
+        {
+            foreach (DataGridViewColumn col in dg.Columns)
+            {
+                if (!dt.Columns.Contains(col.Name))
+                {
+                    dt.Columns.Add(col.Name);
+                }
+                
+            }
+            //foreach (DataGridViewRow row in dg.Rows)
+            //{
+            //    DataRow dRow = dt.NewRow();
+            //    foreach (DataGridViewCell cell in row.Cells)
+            //    {
+            //        dRow[cell.ColumnIndex] = cell.Value;
+            //    }
+            //    dt.Rows.Add(dRow);
+            //}
+
+            for (int i = 0; i < dg.Rows.Count-1; i++)
+            {
+                DataGridViewRow row = dg.Rows[i];
+                DataRow dRow = dt.NewRow();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dRow[cell.ColumnIndex] = cell.Value;
+                }
+                dt.Rows.Add(dRow);
+            }
         }
     }
 

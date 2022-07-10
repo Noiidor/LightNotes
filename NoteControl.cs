@@ -13,7 +13,7 @@ using ExtentionMethods;
 
 namespace LightNotes
 {
-    public partial class NoteApp : UserControl
+    public partial class NoteControl : UserControl
     {
 
         public DataTable dt;
@@ -39,14 +39,14 @@ namespace LightNotes
 
         }
 
-        public NoteApp()
+        public NoteControl()
         {
             InitializeComponent();
         }
 
-        private void NoteApp_Load(object sender, EventArgs e)
+        private void NoteControl_Load(object sender, EventArgs e)
         {
-            app = (AppBase)this.Parent;
+            app = (AppBase)this.Parent.Parent;
             notesDataPath = app.notesDataPath;
 
             dt = new DataTable();
