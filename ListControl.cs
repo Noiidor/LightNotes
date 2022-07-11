@@ -34,7 +34,7 @@ namespace LightNotes
             folderPath = app.folderPath;
 
             listDataFiles = Directory.GetFiles(folderPath, "*.xml", SearchOption.TopDirectoryOnly);
-            CreateListsFromFiles();
+            CreateListsFromXml();
 
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
         }
@@ -59,10 +59,11 @@ namespace LightNotes
             tabControl1.Refresh();
         }
 
-        private void SaveLists()
+        public void SaveLists()
         {
             dt = new DataTable("penis");
             int i = 0;
+
             foreach (TabPage tab in tabControl1.TabPages)
             {
                 DataGridView dataGrid = tab.Controls.OfType<ListPrefab>().First().Controls.OfType<DataGridView>().First();
@@ -74,7 +75,7 @@ namespace LightNotes
             }
         }
 
-        private void CreateListsFromFiles()
+        private void CreateListsFromXml()
         {
             if (listDataFiles.Length != 0)
             {
@@ -95,7 +96,7 @@ namespace LightNotes
 
         private void button_load_Click(object sender, EventArgs e)
         {
-            CreateListsFromFiles();
+            CreateListsFromXml();
         }
     }
 }

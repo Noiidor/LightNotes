@@ -66,7 +66,36 @@ namespace LightNotes
             }
         }
 
+        public void SaveNotes()
+        {
+            foreach (NotePrefab note in notesLayoutPanel.Controls.OfType<NotePrefab>())
+            {
+                if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
+                {
 
+                    note.UpdateData();
+                    string noteTitle = note.title;
+                    string[] noteText = note.text;
+
+                    var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
+                    if (noteTitle != null)
+                    {
+                        dt.Rows[rowIndex][dt.Columns["Title"].Ordinal] = noteTitle;
+                    }
+                    if (noteText != null)
+                    {
+                        dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
+                    }
+                    dt.Rows[rowIndex][dt.Columns["Position"].Ordinal] = notesLayoutPanel.Controls.GetChildIndex(note);
+                }
+            }
+            if (!File.Exists(notesDataPath))
+            {
+                var file = File.Create(notesDataPath);
+                file.Close();
+            }
+            dt.WriteToCsvFile(notesDataPath);
+        }
 
         #region NotesManagment
 

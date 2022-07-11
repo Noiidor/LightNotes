@@ -53,7 +53,7 @@ namespace LightNotes
         {
             folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
             notesDataPath = folderPath + @"\notes.csv";
-            
+
 
             timer = new Timer();
             timer.Tick += new EventHandler(timer_Tick);
@@ -102,40 +102,22 @@ namespace LightNotes
             SaveData();
         }
 
-
         private void SaveData()
         {
-            Control noteControl = Controls.Find("NoteApp", true).First();
-            NoteControl noteApp = (NoteControl)noteControl;
-            DataTable notesDt = noteApp.dt;
-            foreach (NotePrefab note in noteApp.notesLayoutPanel.Controls.OfType<NotePrefab>())
+            Control noteControl = Controls.Find("NoteApp", true).FirstOrDefault();
+            if (noteControl != null)
             {
-                if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
-                {
-
-                    note.UpdateData();
-                    string noteTitle = note.title;
-                    string[] noteText = note.text;
-
-                    var rowIndex = notesDt.Rows.IndexOf(notesDt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
-                    if (noteTitle != null)
-                    {
-                        notesDt.Rows[rowIndex][notesDt.Columns["Title"].Ordinal] = noteTitle;
-                    }
-                    if (noteText != null)
-                    {
-                        notesDt.Rows[rowIndex][notesDt.Columns["Text"].Ordinal] = string.Join(",", noteText);
-                    }
-                    notesDt.Rows[rowIndex][notesDt.Columns["Position"].Ordinal] = noteApp.notesLayoutPanel.Controls.GetChildIndex(note);
-                }
+                NoteControl noteApp = (NoteControl)noteControl;
+                noteApp.SaveNotes();
             }
-            if (!File.Exists(notesDataPath))
+            Control listControl = Controls.Find("ListControl", true).FirstOrDefault();
+            if (listControl != null)
             {
-                var file = File.Create(notesDataPath);
-                file.Close();
+                ListControl listCont = (ListControl)listControl;
+                listCont.SaveLists();
             }
-            notesDt.WriteToCsvFile(notesDataPath);
         }
+
 
         #endregion
 
@@ -227,21 +209,41 @@ namespace LightNotes
 
         private void button_notes_Click(object sender, EventArgs e)
         {
-            panel_controls.Controls.Clear();
-            NoteControl noteControl = new NoteControl();
-            noteControl.Tag = "usercontrol";
-            //noteControl.Location = new Point(panel1.Width, topBorderPanel.Height);
-            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
-
-            panel_controls.Controls.Add(noteControl);
+            foreach (Control cont in panel_controls.Controls)
+            {
+                cont.Visible = false;
+            }
+            if (panel_controls.Controls.OfType<NoteControl>().Count() == 0)
+            {
+                NoteControl noteControl = new NoteControl();
+                noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+                panel_controls.Controls.Add(noteControl);
+            }
+            else
+            {
+                panel_controls.Controls.OfType<NoteControl>().First().Visible = true;
+            }
+           
+            
         }
 
         private void button_list_Click(object sender, EventArgs e)
         {
-            panel_controls.Controls.Clear();
-            ListControl listControl = new ListControl();
-            listControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
-            panel_controls.Controls.Add(listControl);
+            foreach (Control cont in panel_controls.Controls)
+            {
+                cont.Visible = false;
+            }
+            if (panel_controls.Controls.OfType<ListControl>().Count() == 0)
+            {
+                ListControl listControl = new ListControl();
+                listControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+                panel_controls.Controls.Add(listControl);
+            }
+            else
+            {
+                panel_controls.Controls.OfType<ListControl>().First().Visible = true;
+            }
+            
         }
     }
 }
