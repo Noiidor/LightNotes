@@ -29,31 +29,14 @@ namespace LightNotes
         /// </summary>
         private void InitializeComponent()
         {
-            this.tbox_text = new System.Windows.Forms.TextBox();
             this.tbox_title = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button_maximize = new System.Windows.Forms.Button();
             this.panel_drag = new System.Windows.Forms.Panel();
+            this.tbox_text = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
-            // 
-            // tbox_text
-            // 
-            this.tbox_text.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbox_text.BackColor = System.Drawing.SystemColors.Info;
-            this.tbox_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbox_text.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbox_text.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tbox_text.Location = new System.Drawing.Point(0, 31);
-            this.tbox_text.MaxLength = 5000;
-            this.tbox_text.Multiline = true;
-            this.tbox_text.Name = "tbox_text";
-            this.tbox_text.Size = new System.Drawing.Size(244, 216);
-            this.tbox_text.TabIndex = 5;
-            this.tbox_text.TextChanged += new System.EventHandler(this.tbox_text_TextChanged);
             // 
             // tbox_title
             // 
@@ -135,18 +118,33 @@ namespace LightNotes
             this.panel_drag.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_drag_MouseMove);
             this.panel_drag.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_drag_MouseUp);
             // 
+            // tbox_text
+            // 
+            this.tbox_text.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbox_text.BackColor = System.Drawing.SystemColors.Info;
+            this.tbox_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbox_text.EnableAutoDragDrop = true;
+            this.tbox_text.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbox_text.Location = new System.Drawing.Point(0, 31);
+            this.tbox_text.Name = "tbox_text";
+            this.tbox_text.Size = new System.Drawing.Size(244, 216);
+            this.tbox_text.TabIndex = 14;
+            this.tbox_text.Text = "";
+            // 
             // NotePrefab
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Info;
+            this.Controls.Add(this.tbox_text);
             this.Controls.Add(this.panel_drag);
             this.Controls.Add(this.button_maximize);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.tbox_title);
-            this.Controls.Add(this.tbox_text);
             this.Name = "NotePrefab";
             this.Size = new System.Drawing.Size(250, 250);
             this.Load += new System.EventHandler(this.NotePrefab_Load);
@@ -156,12 +154,12 @@ namespace LightNotes
         }
 
         #endregion
-        private System.Windows.Forms.TextBox tbox_text;
         private System.Windows.Forms.TextBox tbox_title;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_maximize;
         public System.Windows.Forms.Panel panel_drag;
+        private System.Windows.Forms.RichTextBox tbox_text;
     }
 }

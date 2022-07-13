@@ -1,7 +1,7 @@
 ﻿
 namespace LightNotes
 {
-    partial class NoteApp
+    partial class NoteControl
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -126,7 +126,7 @@ namespace LightNotes
             this.Controls.Add(this.dataGridView1);
             this.Name = "NoteApp";
             this.Size = new System.Drawing.Size(785, 725);
-            this.Load += new System.EventHandler(this.NoteApp_Load);
+            this.Load += new System.EventHandler(this.NoteControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

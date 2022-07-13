@@ -13,7 +13,7 @@ using ExtentionMethods;
 
 namespace LightNotes
 {
-    public partial class NoteApp : UserControl
+    public partial class NoteControl : UserControl
     {
 
         public DataTable dt;
@@ -39,15 +39,16 @@ namespace LightNotes
 
         }
 
-        public NoteApp()
+        public NoteControl()
         {
             InitializeComponent();
         }
 
-        private void NoteApp_Load(object sender, EventArgs e)
+        private void NoteControl_Load(object sender, EventArgs e)
         {
-            app = (AppBase)this.Parent;
-            notesDataPath = app.notesDataPath;
+            app = (AppBase)this.Parent.Parent;
+            //notesDataPath = app.notesDataPath;
+            notesDataPath = Directory.GetFiles(app.folderPath, "*.csv", SearchOption.TopDirectoryOnly).First();
 
             dt = new DataTable();
             dt.ConvertCSVtoDataTable(notesDataPath);
@@ -66,7 +67,36 @@ namespace LightNotes
             }
         }
 
+        public void SaveNotes()
+        {
+            foreach (NotePrefab note in notesLayoutPanel.Controls.OfType<NotePrefab>())
+            {
+                if (note.Tag.ToString().ToLower() == noteState.Minimized.ToString().ToLower())
+                {
 
+                    note.UpdateData();
+                    string noteTitle = note.title;
+                    string[] noteText = note.text;
+
+                    var rowIndex = dt.Rows.IndexOf(dt.Select("Id ='" + note.id.ToString() + "'", string.Empty)[0]);
+                    if (noteTitle != null)
+                    {
+                        dt.Rows[rowIndex][dt.Columns["Title"].Ordinal] = noteTitle;
+                    }
+                    if (noteText != null)
+                    {
+                        dt.Rows[rowIndex][dt.Columns["Text"].Ordinal] = string.Join(",", noteText);
+                    }
+                    dt.Rows[rowIndex][dt.Columns["Position"].Ordinal] = notesLayoutPanel.Controls.GetChildIndex(note);
+                }
+            }
+            if (!File.Exists(notesDataPath))
+            {
+                var file = File.Create(notesDataPath);
+                file.Close();
+            }
+            dt.WriteToCsvFile(notesDataPath);
+        }
 
         #region NotesManagment
 
