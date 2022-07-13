@@ -47,7 +47,8 @@ namespace LightNotes
         private void NoteControl_Load(object sender, EventArgs e)
         {
             app = (AppBase)this.Parent.Parent;
-            notesDataPath = app.notesDataPath;
+            //notesDataPath = app.notesDataPath;
+            notesDataPath = Directory.GetFiles(app.folderPath, "*.csv", SearchOption.TopDirectoryOnly).First();
 
             dt = new DataTable();
             dt.ConvertCSVtoDataTable(notesDataPath);

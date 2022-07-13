@@ -89,6 +89,7 @@ namespace LightNotes
             this.button_save.TabIndex = 8;
             this.button_save.Text = "S";
             this.button_save.UseVisualStyleBackColor = true;
+            this.button_save.Visible = false;
             this.button_save.Click += new System.EventHandler(this.button_save_Click);
             // 
             // label1
@@ -108,6 +109,7 @@ namespace LightNotes
             this.button_load.TabIndex = 10;
             this.button_load.Text = "L";
             this.button_load.UseVisualStyleBackColor = true;
+            this.button_load.Visible = false;
             this.button_load.Click += new System.EventHandler(this.button_load_Click);
             // 
             // ListControl

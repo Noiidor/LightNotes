@@ -16,11 +16,13 @@ namespace LightNotes
     {
 
         public DataTable dt;
-        AppBase app;
-        public string listDataPath;
-        public string folderPath;
+        private AppBase app;
+        private string listDataPath;
+        private string folderPath;
 
         private string[] listDataFiles;
+
+        private int CorruptIndex;
 
         public ListControl()
         {
@@ -56,6 +58,7 @@ namespace LightNotes
         private void button_delete_tab_Click(object sender, EventArgs e)
         {
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+            File.Delete(listDataFiles[listDataFiles.Length - (tabControl1.SelectedIndex+1)]);
             tabControl1.Refresh();
         }
 
@@ -81,12 +84,35 @@ namespace LightNotes
             {
                 for (int i = 0; i < listDataFiles.Length; i++)
                 {
-                    dt = new DataTable("penis");
-                    dt.ReadXmlSchema(listDataFiles[i]);
-                    dt.ReadXml(listDataFiles[i]);
-                    AddTab(dt.Rows[0].Field<string>("tabName"));
+                    try
+                    {
+                        CorruptIndex = i;
+                        dt = new DataTable("penis");
+                        dt.ReadXmlSchema(listDataFiles[i]);
+                        dt.ReadXml(listDataFiles[i]);
+                        AddTab(dt.Rows[0].Field<string>("tabName"));
+                    }
+                    catch
+                    {
+                        tabControl1.TabPages.Clear();
+                        FileCorruptionPopup pop = new FileCorruptionPopup();
+                        pop.button_corruptClick += Pop_button_corruptClick;
+                        pop.ShowDialog();
+                        
+                    }
+                    
                 }
             }
+        }
+
+        private void Pop_button_corruptClick(object sender, EventArgs e)
+        {
+            
+            File.Delete(listDataFiles[CorruptIndex]);
+            List<string> filesList = listDataFiles.ToList();
+            filesList.RemoveAt(CorruptIndex);
+            listDataFiles = filesList.ToArray();
+            CreateListsFromXml();
         }
 
         private void button_save_Click(object sender, EventArgs e)
