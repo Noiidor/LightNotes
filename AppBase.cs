@@ -51,7 +51,12 @@ namespace LightNotes
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+#if DEBUG
+            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotesTest").FullName;
+#else
             folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
+#endif
             notesDataPath = folderPath + @"\notes.csv";
 
 
@@ -75,6 +80,7 @@ namespace LightNotes
 
             cornerPanel.Parent = this;
             cornerPanel.Location = new Point(this.Width - cornerPanel.Width , this.Height - cornerPanel.Height);
+            
             cornerPanel.BringToFront();
 
             button_close.BringToFront();
@@ -244,6 +250,16 @@ namespace LightNotes
                 panel_controls.Controls.OfType<ListControl>().First().Visible = true;
             }
             
+        }
+
+        private void cornerPanel_Paint(object sender, PaintEventArgs e)
+        {
+            SolidBrush brush = new SolidBrush(panel1.BackColor);
+            e.Graphics.FillPolygon(brush, new Point[] {
+                new Point(cornerPanel.Height, 0),
+                new Point(cornerPanel.Height, cornerPanel.Width),
+                new Point(0, cornerPanel.Width)
+            });
         }
     }
 }

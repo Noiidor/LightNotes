@@ -80,9 +80,10 @@ namespace LightNotes
             // cornerPanel
             // 
             resources.ApplyResources(this.cornerPanel, "cornerPanel");
-            this.cornerPanel.BackColor = System.Drawing.Color.Bisque;
+            this.cornerPanel.BackColor = System.Drawing.Color.Transparent;
             this.cornerPanel.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.cornerPanel.Name = "cornerPanel";
+            this.cornerPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.cornerPanel_Paint);
             this.cornerPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseDown);
             this.cornerPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseMove);
             this.cornerPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cornerPanel_MouseUp);
@@ -97,16 +98,18 @@ namespace LightNotes
             // 
             // button_list
             // 
+            this.button_list.BackColor = System.Drawing.Color.LightSalmon;
             resources.ApplyResources(this.button_list, "button_list");
             this.button_list.Name = "button_list";
-            this.button_list.UseVisualStyleBackColor = true;
+            this.button_list.UseVisualStyleBackColor = false;
             this.button_list.Click += new System.EventHandler(this.button_list_Click);
             // 
             // button_notes
             // 
+            this.button_notes.BackColor = System.Drawing.Color.LightSalmon;
             resources.ApplyResources(this.button_notes, "button_notes");
             this.button_notes.Name = "button_notes";
-            this.button_notes.UseVisualStyleBackColor = true;
+            this.button_notes.UseVisualStyleBackColor = false;
             this.button_notes.Click += new System.EventHandler(this.button_notes_Click);
             // 
             // panel_controls

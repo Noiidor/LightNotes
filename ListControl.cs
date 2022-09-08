@@ -35,6 +35,8 @@ namespace LightNotes
             app = (AppBase)this.Parent.Parent;
             folderPath = app.folderPath;
 
+            dt = new DataTable();
+
             listDataFiles = Directory.GetFiles(folderPath, "*.xml", SearchOption.TopDirectoryOnly);
             CreateListsFromXml();
 
@@ -57,9 +59,15 @@ namespace LightNotes
 
         private void button_delete_tab_Click(object sender, EventArgs e)
         {
-            tabControl1.TabPages.Remove(tabControl1.SelectedTab);
-            File.Delete(listDataFiles[listDataFiles.Length - (tabControl1.SelectedIndex+1)]);
-            tabControl1.Refresh();
+            //File.Delete(listDataFiles[(tabControl1.SelectedIndex )]);
+            if (tabControl1.TabCount != 0)
+            {
+                tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+                tabControl1.Refresh();
+            }
+            
+            
+            
         }
 
         public void SaveLists()
@@ -67,12 +75,23 @@ namespace LightNotes
             dt = new DataTable("penis");
             int i = 0;
 
+            // Костыль...maybe?
+            //Удаляет все файлы и сохраняет по новой
+            foreach (String file in listDataFiles)
+            {
+                File.Delete(file);
+            }
+
             foreach (TabPage tab in tabControl1.TabPages)
             {
                 DataGridView dataGrid = tab.Controls.OfType<ListPrefab>().First().Controls.OfType<DataGridView>().First();
                 dt.FromDataGridView(dataGrid);
                 listDataPath = folderPath + @"\list" + i.ToString() + ".xml";
-                dt.WriteXml(listDataPath);
+                if (dt.Rows.Count != 0)
+                {
+                    dt.WriteXml(listDataPath);
+                }
+                
                 dt.Clear();
                 i += 1;
             }
@@ -118,6 +137,8 @@ namespace LightNotes
         private void button_save_Click(object sender, EventArgs e)
         {
             SaveLists();
+            tabControl1.TabPages.Clear();
+            CreateListsFromXml();
         }
 
         private void button_load_Click(object sender, EventArgs e)
