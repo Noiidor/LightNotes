@@ -17,6 +17,7 @@ namespace LightNotes
 
         public DataTable dt;
         private AppBase app;
+        private TextBox rename_tbox;
         private string listDataPath;
         private string folderPath;
 
@@ -85,6 +86,7 @@ namespace LightNotes
             foreach (TabPage tab in tabControl1.TabPages)
             {
                 DataGridView dataGrid = tab.Controls.OfType<ListPrefab>().First().Controls.OfType<DataGridView>().First();
+                dataGrid.Rows[0].Cells["tabName"].Value = tab.Text;
                 dt.FromDataGridView(dataGrid);
                 listDataPath = folderPath + @"\list" + i.ToString() + ".xml";
                 if (dt.Rows.Count != 0)
@@ -145,5 +147,64 @@ namespace LightNotes
         {
             CreateListsFromXml();
         }
+
+        private void button_rename_tab_Click(object sender, EventArgs e)
+        {
+            //tabControl1.SelectedTab.Name =
+        }
+
+        private void tabControl1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            TabControl tc = sender as TabControl;
+            if (tc != null)
+            {
+                for (int i = 0; i < tc.TabCount; ++i)
+                {
+                    if (tc.GetTabRect(i).Contains(e.Location))
+                    {
+                        TabPage tp = tc.TabPages[i];
+
+                        rename_tbox = new TextBox();
+                        
+                        this.Controls.Add(rename_tbox);
+
+                        label1.Text = Controls.Count.ToString();
+
+                        rename_tbox.Parent = tp;
+                        rename_tbox.Size = new Size(100, 100);
+                        rename_tbox.Location = tc.GetTabRect(i).Location;
+                        rename_tbox.Multiline = false;
+                        rename_tbox.BringToFront();
+                        
+                        rename_tbox.Focus();
+                        rename_tbox.LostFocus += PenisFunc;
+                        //rename_tbox.KeyPress += rename_tbox_KeyPress;
+                        rename_tbox.KeyDown += rename_tbox_KeyDown;
+
+                    }
+                }
+            }
+        }
+
+        private void PenisFunc(object sender, EventArgs e)
+        {
+            rename_tbox.Dispose();
+            //this.Controls.Remove(rename_tbox);
+            label1.Text = Controls.Count.ToString();
+
+        }
+
+        private void rename_tbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                TextBox tbox = sender as TextBox;
+                TabPage tp = tbox.Parent as TabPage;
+                tp.Text = tbox.Text;
+                tabControl1.Refresh();
+                
+            }
+        }
     }
+    
 }

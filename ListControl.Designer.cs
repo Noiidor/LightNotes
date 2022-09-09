@@ -51,12 +51,13 @@ namespace LightNotes
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(760, 725);
             this.tabControl1.TabIndex = 4;
+            this.tabControl1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseDoubleClick);
             // 
             // button_add_tab
             // 
-            this.button_add_tab.Location = new System.Drawing.Point(0, 0);
+            this.button_add_tab.Location = new System.Drawing.Point(1, 0);
             this.button_add_tab.Name = "button_add_tab";
-            this.button_add_tab.Size = new System.Drawing.Size(27, 23);
+            this.button_add_tab.Size = new System.Drawing.Size(23, 23);
             this.button_add_tab.TabIndex = 5;
             this.button_add_tab.Text = "+";
             this.button_add_tab.UseVisualStyleBackColor = true;
@@ -64,9 +65,9 @@ namespace LightNotes
             // 
             // button_delete_tab
             // 
-            this.button_delete_tab.Location = new System.Drawing.Point(0, 26);
+            this.button_delete_tab.Location = new System.Drawing.Point(1, 26);
             this.button_delete_tab.Name = "button_delete_tab";
-            this.button_delete_tab.Size = new System.Drawing.Size(27, 23);
+            this.button_delete_tab.Size = new System.Drawing.Size(23, 23);
             this.button_delete_tab.TabIndex = 6;
             this.button_delete_tab.Text = "-";
             this.button_delete_tab.UseVisualStyleBackColor = true;
@@ -80,6 +81,8 @@ namespace LightNotes
             this.button_rename_tab.TabIndex = 7;
             this.button_rename_tab.Text = "R";
             this.button_rename_tab.UseVisualStyleBackColor = true;
+            this.button_rename_tab.Visible = false;
+            this.button_rename_tab.Click += new System.EventHandler(this.button_rename_tab_Click);
             // 
             // button_save
             // 
@@ -100,7 +103,6 @@ namespace LightNotes
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "label1";
-            this.label1.Visible = false;
             // 
             // button_load
             // 
@@ -118,6 +120,7 @@ namespace LightNotes
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.BackColor = System.Drawing.Color.PeachPuff;
             this.Controls.Add(this.button_load);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_save);
