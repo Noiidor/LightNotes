@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -54,6 +54,18 @@
     <Compile Include="FileCorruptionPopup.Designer.cs">
       <DependentUpon>FileCorruptionPopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListControl.Designer.cs">
+      <DependentUpon>ListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListPrefab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListPrefab.Designer.cs">
+      <DependentUpon>ListPrefab.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
@@ -67,11 +79,11 @@
     <Compile Include="AppBase.Designer.cs">
       <DependentUpon>AppBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="NoteApp.cs">
+    <Compile Include="NoteControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NoteApp.Designer.cs">
-      <DependentUpon>NoteApp.cs</DependentUpon>
+    <Compile Include="NoteControl.Designer.cs">
+      <DependentUpon>NoteControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,8 +99,14 @@
     <EmbeddedResource Include="AppBase.resx">
       <DependentUpon>AppBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NoteApp.resx">
-      <DependentUpon>NoteApp.cs</DependentUpon>
+    <EmbeddedResource Include="ListControl.resx">
+      <DependentUpon>ListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListPrefab.resx">
+      <DependentUpon>ListPrefab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoteControl.resx">
+      <DependentUpon>NoteControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
