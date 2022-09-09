@@ -74,7 +74,7 @@ namespace LightNotes
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.label1.Name = "label1";
             // 
             // cornerPanel
@@ -99,7 +99,9 @@ namespace LightNotes
             // button_list
             // 
             this.button_list.BackColor = System.Drawing.Color.LightSalmon;
+            this.button_list.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             resources.ApplyResources(this.button_list, "button_list");
+            this.button_list.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.button_list.Name = "button_list";
             this.button_list.UseVisualStyleBackColor = false;
             this.button_list.Click += new System.EventHandler(this.button_list_Click);
@@ -107,7 +109,9 @@ namespace LightNotes
             // button_notes
             // 
             this.button_notes.BackColor = System.Drawing.Color.LightSalmon;
+            this.button_notes.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             resources.ApplyResources(this.button_notes, "button_notes");
+            this.button_notes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.button_notes.Name = "button_notes";
             this.button_notes.UseVisualStyleBackColor = false;
             this.button_notes.Click += new System.EventHandler(this.button_notes_Click);

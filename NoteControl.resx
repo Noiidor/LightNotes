@@ -150,20 +150,17 @@
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="notesLayoutPanel.AutoScroll" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="notesLayoutPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
+  <data name="notesLayoutPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="notesLayoutPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 210</value>
+    <value>0, 290</value>
   </data>
   <data name="notesLayoutPanel.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>700, 250</value>
   </data>
   <data name="notesLayoutPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>785, 515</value>
+    <value>785, 435</value>
   </data>
   <data name="notesLayoutPanel.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -287,6 +284,9 @@
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>label1</value>
+  </data>
+  <data name="label1.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>

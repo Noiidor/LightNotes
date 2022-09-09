@@ -46,10 +46,11 @@ namespace LightNotes
 
         private void NoteControl_Load(object sender, EventArgs e)
         {
+            //this.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
             app = (AppBase)this.Parent.Parent;
             //notesDataPath = app.notesDataPath;
             notesDataPath = Directory.GetFiles(app.folderPath, "*.csv", SearchOption.TopDirectoryOnly).First();
-
+            
             dt = new DataTable();
             dt.ConvertCSVtoDataTable(notesDataPath);
             CreateNotesFromTable(dt);
@@ -189,15 +190,17 @@ namespace LightNotes
             {
                 noteIndex = notesLayoutPanel.Controls.GetChildIndex(note);
                 prefab.panel_drag.Visible = false;
-                note.Size = new Size(this.Width, this.Height - app.topBorderPanel.Height);
+                note.Size = new Size(this.Width, this.Height);
                 note.Parent = this;
-                note.Location = new Point(0, app.topBorderPanel.Height);
+                note.Location = new Point(0, 0);
+                note.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
                 note.BringToFront();
                 note.Tag = noteState.Maximized;
             }
             else
             {
                 prefab.panel_drag.Visible = true;
+                note.Anchor = AnchorStyles.None;
                 note.Size = new Size(250, 250);
                 note.Parent = notesLayoutPanel;
                 notesLayoutPanel.Controls.SetChildIndex(note, noteIndex);

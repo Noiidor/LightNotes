@@ -88,11 +88,11 @@ namespace LightNotes
 
             NoteControl noteControl = new NoteControl();
             noteControl.Tag = "usercontrol";
-            //noteControl.Location = new Point(panel1.Width, topBorderPanel.Height);
-            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
+            
 
             panel_controls.Controls.Add(noteControl);
-            
+            noteControl.BringToFront();
             //noteApp.Dock = DockStyle.Top;
             
         }
@@ -222,7 +222,7 @@ namespace LightNotes
             if (panel_controls.Controls.OfType<NoteControl>().Count() == 0)
             {
                 NoteControl noteControl = new NoteControl();
-                noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left);
+                noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
                 panel_controls.Controls.Add(noteControl);
             }
             else
