@@ -63,7 +63,7 @@ namespace LightNotes
             timer = new Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 30000;
-            //timer.Start();
+            timer.Start();
 
 
             if (!File.Exists(notesDataPath))
@@ -110,7 +110,7 @@ namespace LightNotes
 
         private void SaveData()
         {
-            Control noteControl = Controls.Find("NoteApp", true).FirstOrDefault();
+            Control noteControl = Controls.Find("NoteControl", true).FirstOrDefault();
             if (noteControl != null)
             {
                 NoteControl noteApp = (NoteControl)noteControl;
@@ -211,7 +211,20 @@ namespace LightNotes
             
         }
 
+        private void cornerPanel_Paint(object sender, PaintEventArgs e)
+        {
+            SolidBrush brush = new SolidBrush(panel1.BackColor);
+            e.Graphics.FillPolygon(brush, new Point[] {
+                new Point(cornerPanel.Height, 0),
+                new Point(cornerPanel.Height, cornerPanel.Width),
+                new Point(0, cornerPanel.Width)
+            });
+        }
+
         #endregion
+
+
+        #region Controls
 
         private void button_notes_Click(object sender, EventArgs e)
         {
@@ -252,14 +265,8 @@ namespace LightNotes
             
         }
 
-        private void cornerPanel_Paint(object sender, PaintEventArgs e)
-        {
-            SolidBrush brush = new SolidBrush(panel1.BackColor);
-            e.Graphics.FillPolygon(brush, new Point[] {
-                new Point(cornerPanel.Height, 0),
-                new Point(cornerPanel.Height, cornerPanel.Width),
-                new Point(0, cornerPanel.Width)
-            });
-        }
+        #endregion
+
+        
     }
 }
