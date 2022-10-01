@@ -61,11 +61,60 @@ namespace LightNotes.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Id;Title;Text.
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap check {
+            get {
+                object obj = ResourceManager.GetObject("check", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на {&quot;installed&quot;:{&quot;client_id&quot;:&quot;760186884830-6mrahosa1tgn3gv6ole2nhdcasoiclld.apps.googleusercontent.com&quot;,&quot;project_id&quot;:&quot;lightnotes&quot;,&quot;auth_uri&quot;:&quot;https://accounts.google.com/o/oauth2/auth&quot;,&quot;token_uri&quot;:&quot;https://oauth2.googleapis.com/token&quot;,&quot;auth_provider_x509_cert_url&quot;:&quot;https://www.googleapis.com/oauth2/v1/certs&quot;,&quot;client_secret&quot;:&quot;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&quot;,&quot;redirect_uris&quot;:[&quot;http://localhost&quot;]}}.
+        /// </summary>
+        internal static string client_secret {
+            get {
+                return ResourceManager.GetString("client_secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Id;Title;Text;Position.
         /// </summary>
         internal static string data {
             get {
                 return ResourceManager.GetString("data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap download {
+            get {
+                object obj = ResourceManager.GetObject("download", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap esqueleto {
+            get {
+                object obj = ResourceManager.GetObject("esqueleto", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap minus {
+            get {
+                object obj = ResourceManager.GetObject("minus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

@@ -29,7 +29,8 @@ namespace LightNotes
         {
             InitializeComponent();
         }
-
+        
+        // Добавить подтверждение удаления списка
 
         private void ListControl_Load(object sender, EventArgs e)
         {
@@ -177,7 +178,7 @@ namespace LightNotes
                         rename_tbox.BringToFront();
                         
                         rename_tbox.Focus();
-                        rename_tbox.LostFocus += PenisFunc;
+                        rename_tbox.LostFocus += rename_box_LostFocus;
                         //rename_tbox.KeyPress += rename_tbox_KeyPress;
                         rename_tbox.KeyDown += rename_tbox_KeyDown;
 
@@ -186,11 +187,11 @@ namespace LightNotes
             }
         }
 
-        private void PenisFunc(object sender, EventArgs e)
+        private void rename_box_LostFocus(object sender, EventArgs e)
         {
             rename_tbox.Dispose();
             //this.Controls.Remove(rename_tbox);
-            label1.Text = Controls.Count.ToString();
+            //label1.Text = Controls.Count.ToString();
 
         }
 
@@ -203,6 +204,10 @@ namespace LightNotes
                 tp.Text = tbox.Text;
                 tabControl1.Refresh();
                 
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                rename_tbox.Dispose();
             }
         }
     }

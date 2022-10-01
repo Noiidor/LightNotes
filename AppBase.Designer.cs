@@ -33,9 +33,15 @@ namespace LightNotes
             this.button_close = new System.Windows.Forms.Button();
             this.button_minimaze = new System.Windows.Forms.Button();
             this.topBorderPanel = new System.Windows.Forms.Panel();
+            this.button_check = new System.Windows.Forms.Button();
+            this.button_clear = new System.Windows.Forms.Button();
+            this.button_download = new System.Windows.Forms.Button();
+            this.button_upload = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cornerPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button_sync = new System.Windows.Forms.Button();
             this.button_list = new System.Windows.Forms.Button();
             this.button_notes = new System.Windows.Forms.Button();
             this.panel_controls = new System.Windows.Forms.Panel();
@@ -65,11 +71,49 @@ namespace LightNotes
             // 
             resources.ApplyResources(this.topBorderPanel, "topBorderPanel");
             this.topBorderPanel.BackColor = System.Drawing.Color.Bisque;
+            this.topBorderPanel.Controls.Add(this.button_check);
+            this.topBorderPanel.Controls.Add(this.button_clear);
+            this.topBorderPanel.Controls.Add(this.button_download);
+            this.topBorderPanel.Controls.Add(this.button_upload);
+            this.topBorderPanel.Controls.Add(this.label2);
             this.topBorderPanel.Controls.Add(this.label1);
             this.topBorderPanel.Name = "topBorderPanel";
             this.topBorderPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseDown);
             this.topBorderPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseMove);
             this.topBorderPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.topBorderPanel_MouseUp);
+            // 
+            // button_check
+            // 
+            resources.ApplyResources(this.button_check, "button_check");
+            this.button_check.Name = "button_check";
+            this.button_check.UseVisualStyleBackColor = true;
+            this.button_check.Click += new System.EventHandler(this.button_check_Click);
+            // 
+            // button_clear
+            // 
+            resources.ApplyResources(this.button_clear, "button_clear");
+            this.button_clear.Name = "button_clear";
+            this.button_clear.UseVisualStyleBackColor = true;
+            this.button_clear.Click += new System.EventHandler(this.button_clear_Click);
+            // 
+            // button_download
+            // 
+            resources.ApplyResources(this.button_download, "button_download");
+            this.button_download.Name = "button_download";
+            this.button_download.UseVisualStyleBackColor = true;
+            this.button_download.Click += new System.EventHandler(this.button_download_Click);
+            // 
+            // button_upload
+            // 
+            resources.ApplyResources(this.button_upload, "button_upload");
+            this.button_upload.Name = "button_upload";
+            this.button_upload.UseVisualStyleBackColor = true;
+            this.button_upload.Click += new System.EventHandler(this.button_upload_Click);
+            // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
             // 
             // label1
             // 
@@ -91,10 +135,22 @@ namespace LightNotes
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.BurlyWood;
+            this.panel1.Controls.Add(this.button_sync);
             this.panel1.Controls.Add(this.button_list);
             this.panel1.Controls.Add(this.button_notes);
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
+            // 
+            // button_sync
+            // 
+            resources.ApplyResources(this.button_sync, "button_sync");
+            this.button_sync.BackColor = System.Drawing.Color.Transparent;
+            this.button_sync.BackgroundImage = global::LightNotes.Properties.Resources.minus;
+            this.button_sync.FlatAppearance.BorderSize = 0;
+            this.button_sync.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.button_sync.Name = "button_sync";
+            this.button_sync.UseVisualStyleBackColor = false;
+            this.button_sync.Click += new System.EventHandler(this.button_sync_Click_1);
             // 
             // button_list
             // 
@@ -152,6 +208,12 @@ namespace LightNotes
         private System.Windows.Forms.Button button_list;
         private System.Windows.Forms.Button button_notes;
         private System.Windows.Forms.Panel panel_controls;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button_download;
+        private System.Windows.Forms.Button button_upload;
+        private System.Windows.Forms.Button button_clear;
+        private System.Windows.Forms.Button button_check;
+        private System.Windows.Forms.Button button_sync;
     }
 }
 

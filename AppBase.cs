@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Numerics;
 using System.Windows.Forms;
 using System.IO;
@@ -20,18 +21,19 @@ namespace LightNotes
         public string notesDataPath;
         public string listDataPath;
         public string folderPath;
+        private bool synchronized;
+        private string tokenFolderPath;
 
         private Point formOffset;
         private Point borderOffset;
 
-        private Timer timer;
+        private System.Windows.Forms.Timer timer;
 
         private enum noteState
         {
             Minimized,
             Maximized,
             Dragged
-
         }
 
         public AppBase()
@@ -49,21 +51,41 @@ namespace LightNotes
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
 
 #if DEBUG
-            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotesTest").FullName;
+            //folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotesTest").FullName;
+            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\LightNotesTest").FullName;
 #else
-            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
+            //folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\LightNotes").FullName;
+            folderPath = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\LightNotes").FullName;
 #endif
             notesDataPath = folderPath + @"\notes.csv";
 
+            tokenFolderPath = folderPath + @"\" + "token";
+            string tokenFilePath = tokenFolderPath + @"\" + "Google.Apis.Auth.OAuth2.Responses.TokenResponse-user";
 
-            timer = new Timer();
+            if (File.Exists(tokenFilePath))
+            {
+                var pp = await DriveSynchronization.Authorize(folderPath).Result;
+
+                synchronized = pp != null;
+                
+                if (synchronized)
+                {
+                    await DriveSynchronization.CheckOutdated(folderPath);
+                    button_sync.BackgroundImage = Properties.Resources.check;
+                }
+                
+            }
+            
+            
+
+            timer = new System.Windows.Forms.Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 30000;
-            timer.Start();
+            //timer.Start();
 
 
             if (!File.Exists(notesDataPath))
@@ -80,21 +102,12 @@ namespace LightNotes
 
             cornerPanel.Parent = this;
             cornerPanel.Location = new Point(this.Width - cornerPanel.Width , this.Height - cornerPanel.Height);
-            
             cornerPanel.BringToFront();
-
             button_close.BringToFront();
             button_minimaze.BringToFront();
 
-            NoteControl noteControl = new NoteControl();
-            noteControl.Tag = "usercontrol";
-            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
-            
+            CreateNoteControl();
 
-            panel_controls.Controls.Add(noteControl);
-            noteControl.BringToFront();
-            //noteApp.Dock = DockStyle.Top;
-            
         }
 
 
@@ -122,6 +135,42 @@ namespace LightNotes
                 ListControl listCont = (ListControl)listControl;
                 listCont.SaveLists();
             }
+
+            if (synchronized)
+            {
+                DriveSynchronization.UpdateOnDrive(folderPath);
+            }
+
+        }
+
+        private async void button_sync_Click_1(object sender, EventArgs e)
+        {
+            if (!synchronized)
+            {
+                var pp = await DriveSynchronization.Authorize(folderPath);
+
+                synchronized = pp != null;
+                
+                if (synchronized)
+                {
+                    panel_controls.Controls.Clear();
+                    
+                    await DriveSynchronization.CheckOutdated(folderPath);
+
+                    CreateNoteControl();
+
+                    button_sync.BackgroundImage = Properties.Resources.check;
+                }
+                
+            }
+            else
+            {
+                DriveSynchronization.Deathorize();
+                Directory.Delete(tokenFolderPath, true);
+                synchronized = false;
+                button_sync.BackgroundImage = Properties.Resources.minus;
+            }
+            
         }
 
 
@@ -132,6 +181,7 @@ namespace LightNotes
 
         private void button_close_Click(object sender, EventArgs e)
         {
+            this.Hide();
             SaveData();
             Application.Exit();
         }
@@ -265,7 +315,57 @@ namespace LightNotes
             
         }
 
+        private void CreateNoteControl()
+        {
+            NoteControl noteControl = new NoteControl();
+            noteControl.Tag = "usercontrol";
+            noteControl.Anchor = (AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom);
+            panel_controls.Controls.Add(noteControl);
+            noteControl.BringToFront();
+        }
+
         #endregion
+
+        private void button_sync_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            DriveSynchronization.Authorize(folderPath);
+        }
+
+        private void button_upload_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            DriveSynchronization.UpdateOnDrive(folderPath);
+        }
+
+        private void button_download_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            DriveSynchronization.DownloadAllFromDrive(folderPath);
+        }
+
+        private void button_clear_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            DriveSynchronization.ClearDrive();
+        }
+
+        private void button_check_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            label2.Text = DriveSynchronization.CheckDrive();
+        }
+
+        private void button_date_Click(object sender, EventArgs e)
+        {
+            
+            
+        }
+
+        private void button_md_Click(object sender, EventArgs e)
+        {
+            
+        }
 
         
     }

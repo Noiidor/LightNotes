@@ -154,13 +154,13 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="notesLayoutPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 290</value>
+    <value>0, 195</value>
   </data>
   <data name="notesLayoutPanel.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>700, 250</value>
   </data>
   <data name="notesLayoutPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>785, 435</value>
+    <value>785, 530</value>
   </data>
   <data name="notesLayoutPanel.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>

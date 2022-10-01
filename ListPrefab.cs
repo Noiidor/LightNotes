@@ -36,6 +36,9 @@ namespace LightNotes
             dt = new DataTable();
             
             dt = listControl.dt;
+
+            //dataGridView1.ScrollBars = ScrollBars.Vertical;
+           
             //dataGridView1.DataSource = dt;
             //dataGridView1.Columns["index"].DataPropertyName = "index";
             //dataGridView1.Columns["value"].DataPropertyName = "value";
